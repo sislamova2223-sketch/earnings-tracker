@@ -45,7 +45,6 @@ def extract_with_llm(sources: dict[str, str], company: str, ticker: str, quarter
     msg = client.messages.create(
         model=model,
         max_tokens=8000,
-        temperature=0,
         system=SYSTEM,
         tools=[tool],
         tool_choice={"type": "tool", "name": "record_extraction"},
