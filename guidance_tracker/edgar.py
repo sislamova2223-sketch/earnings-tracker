@@ -30,6 +30,11 @@ def _session() -> requests.Session:
 def _get(url: str) -> requests.Response:
     time.sleep(0.15)  # stay well under SEC's 10 requests/second limit
     r = _session().get(url, timeout=30)
+    if r.status_code == 403:
+        import re as _re
+        msg = _re.sub(r"<[^>]+>", " ", r.text)
+        msg = _re.sub(r"\s+", " ", msg).strip()[:300]
+        raise RuntimeError(f"SEC refused {url} (403): {msg} | UA sent: {_session().headers['User-Agent']}")
     r.raise_for_status()
     return r
 
