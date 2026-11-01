@@ -16,7 +16,7 @@ import requests
 TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik:010d}.json"
 ARCHIVE_URL = "https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/"
-DEFAULT_UA = "EarningsTracker 288703607+sislamova2223-sketch@users.noreply.github.com"  # override with SEC_USER_AGENT
+DEFAULT_UA = "EarningsTracker sislamova2223-sketch@users.noreply.github.com"  # override with SEC_USER_AGENT
 
 
 @lru_cache(maxsize=1)
