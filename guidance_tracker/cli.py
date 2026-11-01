@@ -15,13 +15,13 @@ from .extract import DEFAULT_MODEL
 
 
 def cmd_update(a):
-    from .update import load_coverage, update_company
+    from .update import add_company, load_coverage, update_company
+    wanted = {t.upper().strip(",") for t in a.tickers if t.strip(",")}
+    for t in sorted(wanted - {c["ticker"] for c in load_coverage()}):
+        print(f"{t}: not covered yet, adding it")
+        add_company(t)  # tickers searched on the site are added automatically
     cov = load_coverage()
-    wanted = {t.upper() for t in a.tickers}
     targets = [c for c in cov if not wanted or c["ticker"] in wanted]
-    missing = wanted - {c["ticker"] for c in cov}
-    if missing:
-        sys.exit(f"Not in coverage.json: {', '.join(sorted(missing))}. Use `add` first.")
     from .edgar import SECThrottled
     failures = 0
     for c in targets:

@@ -121,6 +121,51 @@ label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-w
 footer { margin-top: 36px; color: var(--muted); font-size: 12px; max-width: 80ch; }
 @media (max-width: 520px) { .tone li { grid-template-columns: 1fr; gap: 2px; } .brief { padding: 16px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.live-status:empty { display: none; }
+.live-status[data-state="running"] { color: var(--accent); }
+.live-status[data-state="error"] { color: var(--bad); }
+.live-status[data-state="done"] { color: var(--good); }
+.owner { margin-top: 14px; }
+.owner summary { cursor: pointer; }
+.owner input { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font-weight: 400; }
+.owner p { max-width: 75ch; }
+/* one-page report */
+.report-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+.report { background: #fff; color: #14202e; width: 8.5in; max-width: 100%; min-height: 11in; margin: 14px auto; padding: 0.45in 0.5in; box-shadow: 0 2px 14px rgba(0,0,0,.12); font-size: 10.5px; line-height: 1.4; color-scheme: light; }
+.report h1 { font: 600 24px/1.1 var(--font-display); margin: 2px 0 4px; }
+.report h1 span { color: #5c6b80; font-weight: 500; }
+.report h3 { font: 600 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: .08em; color: #1d4e9e; margin: 14px 0 6px; border-bottom: 1px solid #dce2ea; padding-bottom: 4px; }
+.r-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #142033; padding-bottom: 10px; }
+.r-kicker { font: 600 10px var(--font-display); text-transform: uppercase; letter-spacing: .1em; color: #5c6b80; }
+.r-meta { color: #5c6b80; font-size: 11px; }
+.r-badge { text-align: right; font: 600 22px var(--font-num); color: #23704a; }
+.r-badge small { display: block; font: 400 9.5px var(--font-body); color: #5c6b80; }
+.r-take { margin: 0; padding-left: 16px; }
+.r-take li { margin: 2px 0; }
+.r-cols { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
+.report table { font-size: 10px; }
+.report th { font-size: 9px; padding: 3px 5px; color: #5c6b80; border-color: #dce2ea; }
+.report td { padding: 3px 5px; border-color: #eef1f5; }
+.report .chip { font-size: 8.5px; padding: 1px 5px; }
+.report .chip.raised, .report .chip.positive { background: #e3f2ea; color: #23704a; }
+.report .chip.lowered, .report .chip.negative { background: #f9e4e2; color: #a3302b; }
+.report .chip.cautious { background: #fbf0dc; color: #9a6200; }
+.report .chip.maintained, .report .chip.neutral, .report .chip.unclear { background: #e8ecf1; color: #5c6b80; }
+.report .chip.initiated { background: #e5edf9; color: #1d4e9e; }
+.r-tone { margin: 0; padding: 0; list-style: none; }
+.r-tone li { padding: 4px 0; border-bottom: 1px solid #eef1f5; }
+.r-tone q { display: block; color: #5c6b80; font-style: italic; margin-top: 1px; }
+.r-more { color: #5c6b80; font-size: 9px; margin: 3px 0 0; }
+.r-foot { margin-top: 14px; padding-top: 6px; border-top: 1px solid #dce2ea; color: #5c6b80; font-size: 8.5px; }
+@media (max-width: 760px) { .r-cols { grid-template-columns: 1fr; } .report { padding: 18px; min-height: 0; } }
+@media print {
+  @page { size: letter; margin: 0; }
+  body { background: #fff; }
+  header.top, footer, #notice, .noprint { display: none !important; }
+  .wrap { max-width: none; padding: 0; }
+  .report { box-shadow: none; margin: 0; width: 8.5in; min-height: 0; height: 11in; overflow: hidden; }
+}
 </style>
 </head>
 <body>
@@ -144,6 +189,15 @@ footer { margin-top: 36px; color: var(--muted); font-size: 12px; max-width: 80ch
     Python code then checks every quote against the source text and every number against its quote, and any item that fails is left
     out and listed in that company's audit log. New calls are picked up automatically every day.
     <span id="updated"></span> Built by Sabina Islamova · <a href="https://github.com/sislamova2223-sketch/earnings-tracker">source code</a>.
+    <details id="owner" class="owner"><summary>Owner settings</summary>
+      <p>Live analysis starts a GitHub Action in this repo, so it needs a GitHub access token that's allowed to run it. The token is
+      stored only in this browser (never in the site or the repo). Create a <b>fine-grained token</b> at github.com → Settings →
+      Developer settings → Personal access tokens, limited to the <b>earnings-tracker</b> repo, with <b>Actions: Read and write</b>
+      and <b>Contents: Read-only</b>.</p>
+      <div class="actions"><label for="o-token" style="flex:1 1 260px">GitHub token<input id="o-token" type="password" placeholder="github_pat_…" autocomplete="off"></label>
+        <button class="btn" id="o-save" style="align-self:flex-end">Save</button><button class="btn ghost" id="o-clear" style="align-self:flex-end">Disconnect</button></div>
+      <div class="status" id="o-status"></div>
+    </details>
   </footer>
 </div>
 
@@ -222,6 +276,7 @@ function validateExtraction(ex, sources) {
 // ---------- formatting ----------
 function fmt(v, unit) {
   if (v === null || v === undefined) return "";
+  if (v < 0 && unit !== "percent" && unit !== "other") return "−" + fmt(-v, unit);
   const trim = (x, d) => x.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: d });
   if (unit === "usd_billions") return "$" + trim(v, 2) + "B";
   if (unit === "usd_millions") return "$" + trim(v, 1) + "M";
@@ -273,7 +328,7 @@ function renderHome(q) {
     }
     if (comp.length || !hits.length) html += `<h2 class="sec">Companies matching “${esc(q)}”</h2>`;
     if (comp.length || !hits.length) html += comp.length ? `<div class="grid">${comp.map(cardHTML).join("")}</div>`
-      : `<div class="empty">No company in coverage matches “${esc(q)}”. Request it below.</div>`;
+      : `<div class="empty">No company in coverage matches “${esc(q)}”.${looksLikeTicker(q) ? ` <button class="btn" data-analyze="${esc(cleanTicker(q))}" style="margin-left:8px">Analyze ${esc(cleanTicker(q))} now</button><div class="live-status status" data-state="${LIVE.state}" style="margin-top:8px">${LIVE.msg}</div>` : " Try a ticker, e.g. NVDA."}</div>`;
     if (hits.length) {
       const hl = (s) => esc(s).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), m => `<mark>${m}</mark>`);
       html += `<h2 class="sec">${hits.length} mention${hits.length > 1 ? "s" : ""} in calls</h2><div class="hits">` +
@@ -282,7 +337,7 @@ function renderHome(q) {
   } else {
     html += `<h2 class="sec">Coverage · latest call per company</h2>`;
     html += list.length ? `<div class="grid">${list.map(cardHTML).join("")}</div>`
-      : `<div class="empty">No calls analyzed yet. Request a company below.</div>`;
+      : `<div class="empty">No calls analyzed yet. Analyze a company below.</div>`;
   }
   html += analyzePanelHTML();
   view.innerHTML = html;
@@ -317,7 +372,10 @@ function renderBrief(id) {
     <div class="brief-head">
       <div><h2>${esc(c.company)} (${esc(c.ticker)})</h2>
         <div class="meta">${esc(c.quarter)} earnings call · ${esc(c.call_date || "")} · analyzed ${esc((c.analyzed_at || "").slice(0, 10))}${c.model ? " · " + esc(c.model) : ""}</div>
-        ${links ? `<div class="links">${links}</div>` : ""}</div>
+        ${links ? `<div class="links">${links}</div>` : ""}
+        <div class="actions" style="margin-top:12px"><button class="btn" data-report="${esc(c.ticker)}" data-id="${esc(c.id)}">Generate one-page report</button>
+          ${tokenGet() ? `<button class="btn ghost" data-analyze="${esc(c.ticker)}" data-force="1">Re-analyze latest call</button>` : ""}</div>
+        ${tokenGet() ? `<div class="live-status status" data-state="${LIVE.state}">${LIVE.msg}</div>` : ""}</div>
       <span class="badge">${c.counts.verified} of ${c.counts.total} items verified</span>
     </div>
     ${c.transcript_found === false ? `<div class="notice">No call transcript was found automatically, so this analysis uses the press release only.</div>` : ""}
@@ -337,41 +395,161 @@ function renderBrief(id) {
   </article>`;
 }
 
-// ---------- request a company ----------
+// ---------- live analysis (any ticker) ----------
 const REPO = (() => {
   const h = location.hostname, seg = location.pathname.split("/").filter(Boolean);
   if (h.endsWith(".github.io")) return h.split(".")[0] + "/" + (seg[0] || h);
   return "sislamova2223-sketch/earnings-tracker";
 })();
-function analyzePanelHTML() {
+const API = `https://api.github.com/repos/${REPO}`;
+const tokenGet = () => { try { return localStorage.getItem("ect_token") || ""; } catch (e) { return ""; } };
+const tokenSet = (v) => { try { v ? localStorage.setItem("ect_token", v) : localStorage.removeItem("ect_token"); } catch (e) {} };
+const cleanTicker = (t) => String(t || "").trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, "").slice(0, 10);
+const looksLikeTicker = (q) => /^[A-Za-z][A-Za-z0-9.\-]{0,6}$/.test(q.trim());
+const LIVE = { ticker: null, msg: "", state: "idle", runUrl: "" };
+
+async function gh(path, opts = {}) {
+  const r = await fetch(API + path, { ...opts, headers: { "Authorization": "Bearer " + tokenGet(), "Accept": opts.raw ? "application/vnd.github.raw+json" : "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", ...(opts.body ? { "Content-Type": "application/json" } : {}) } });
+  if (r.status === 401 || r.status === 403) throw new Error("GitHub rejected the access token. Open Owner settings at the bottom of the page and paste a new one.");
+  if (!r.ok && r.status !== 204) throw new Error(`GitHub API error ${r.status}`);
+  return r.status === 204 ? null : (opts.raw ? r.text() : r.json());
+}
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+function liveStatus(text, state) {
+  LIVE.msg = text; if (state) LIVE.state = state;
+  document.querySelectorAll(".live-status").forEach(el => { el.innerHTML = LIVE.msg; el.dataset.state = LIVE.state; });
+}
+async function analyzeLive(ticker, force = false, thenReport = false) {
+  ticker = cleanTicker(ticker);
+  if (!ticker) return;
+  if (!tokenGet()) { openOwner(); liveStatus("Live analysis is for the site owner. Add your GitHub access token in Owner settings below to turn it on.", "error"); return; }
+  if (LIVE.state === "running") return;
+  LIVE.ticker = ticker; LIVE.runUrl = ""; LIVE.checkedAt = null;
+  const started = new Date(Date.now() - 5000).toISOString();
+  try {
+    liveStatus(thenReport ? `Generating an up-to-date report for <b>${esc(ticker)}</b>: checking SEC for a newer earnings call…` : `Starting the analysis for <b>${esc(ticker)}</b>…`, "running");
+    await gh("/actions/workflows/update.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main", inputs: { tickers: ticker, force: force ? "true" : "false" } }) });
+    let run = null;
+    const steps = ["Finding the latest earnings 8-K on SEC EDGAR…", "Pulling the call transcript…", "Claude is reading the call…", "Checking every quote and number against the source…", "Saving the results…"];
+    for (let i = 0; i < 90; i++) {
+      await sleep(i < 3 ? 4000 : 6000);
+      const runs = await gh(`/actions/workflows/update.yml/runs?event=workflow_dispatch&per_page=5&created=>=${started}`);
+      run = (runs.workflow_runs || [])[0] || run;
+      if (run) LIVE.runUrl = run.html_url;
+      if (!run) { liveStatus(`Waiting for GitHub to start the job for <b>${esc(ticker)}</b>…`); continue; }
+      if (run.status !== "completed") { liveStatus(`<b>${esc(ticker)}</b>: ${steps[Math.min(steps.length - 1, Math.floor(i / 4))]} <span class="meta">(usually 1–3 minutes)</span>`); continue; }
+      break;
+    }
+    if (!run || run.status !== "completed") throw new Error("The job is taking longer than usual. Check the log on GitHub.");
+    if (run.conclusion !== "success") throw new Error("The analysis job failed.");
+    const idx = JSON.parse(await gh("/contents/docs/data/index.json?ref=main", { raw: true }));
+    const entries = idx.calls.filter(c => c.ticker === ticker).sort((a, b) => String(b.call_date).localeCompare(String(a.call_date)));
+    if (!entries.length) throw new Error(`No earnings release was found for ${ticker} on SEC EDGAR. It may not be a US-listed company.`);
+    const doc = JSON.parse(await gh(`/contents/docs/data/${entries[0].file}?ref=main`, { raw: true }));
+    S.calls = S.calls.filter(c => c.id !== doc.id).concat([doc]);
+    liveStatus(thenReport ? `Checked SEC and the transcript sources just now. Report is current as of this minute.` : `<b>${esc(ticker)}</b> is ready. It also appears for everyone visiting the site within a minute or two.`, "done");
+    LIVE.state = "idle";
+    LIVE.checkedAt = new Date();
+    location.hash = (thenReport ? "report-" : "") + doc.id;
+  } catch (e) {
+    liveStatus(`${esc(e.message)}${LIVE.runUrl ? ` <a href="${esc(LIVE.runUrl)}" target="_blank" rel="noopener">View the job log ↗</a>` : ""}`, "error");
+    LIVE.state = "idle";
+  }
+}
+
+function analyzePanelHTML(prefill = "") {
+  const hasToken = !!tokenGet();
   return `<section class="panel" id="analyze">
-    <h2>Request a company</h2>
-    <p>Enter any US-listed ticker. A GitHub Action finds the company’s latest earnings 8-K on SEC EDGAR and its call transcript,
-       has Claude extract guidance, results and tone, checks every quote and number against the source, and publishes it here.
-       It usually takes 3–5 minutes. Requests are made by opening a GitHub issue, so you’ll need to be signed in to GitHub.</p>
+    <h2>Analyze any company</h2>
+    <p>Enter a US-listed ticker. The tracker finds the company’s latest earnings release on SEC EDGAR, pulls the call transcript
+       from its investor relations site or the Motley Fool, has Claude extract guidance, results and tone, checks every quote and
+       number against the source, and adds the company here. Takes about 1–3 minutes.</p>
     <div class="actions">
-      <label for="f-ticker" style="flex:0 0 160px">Ticker<input id="f-ticker" placeholder="NVDA" maxlength="10" autocomplete="off"></label>
-      <a class="btn" id="f-go" href="#" role="button" style="align-self:flex-end;text-decoration:none">Request analysis</a>
-      <span class="status" id="f-status"></span>
+      <label for="f-ticker" style="flex:0 0 160px">Ticker<input id="f-ticker" placeholder="NVDA" maxlength="10" autocomplete="off" value="${esc(prefill)}"></label>
+      <button class="btn" id="f-go" style="align-self:flex-end">Analyze now</button>
     </div>
+    <div class="live-status status" data-state="${LIVE.state}">${LIVE.msg || (hasToken ? "" : "Live analysis runs for the site owner. Visitors can browse every company already covered.")}</div>
   </section>`;
 }
 function wireAnalyze() {
-  const go = $("#f-go"), inp = $("#f-ticker"); if (!go) return;
-  const sync = () => {
-    const t = inp.value.trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, "");
-    go.href = t ? `https://github.com/${REPO}/issues/new?title=${encodeURIComponent("Add " + t)}&body=${encodeURIComponent("Requested from the Earnings Call Tracker site. The workflow will analyze " + t + "'s latest earnings call.")}` : "#";
-    go.target = t ? "_blank" : "";
-  };
-  inp.addEventListener("input", sync);
-  go.addEventListener("click", (e) => { if (go.getAttribute("href") === "#") { e.preventDefault(); $("#f-status").textContent = "Enter a ticker first."; } else { $("#f-status").textContent = "Submit the issue on GitHub; the call appears here when the workflow finishes."; } });
-  sync();
+  const go = $("#f-go"), inp = $("#f-ticker");
+  if (go && inp) {
+    go.addEventListener("click", () => analyzeLive(inp.value));
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") analyzeLive(inp.value); });
+  }
+  document.querySelectorAll("[data-analyze]").forEach(b => b.addEventListener("click", () => analyzeLive(b.dataset.analyze, b.dataset.force === "1")));
+  document.querySelectorAll("[data-report]").forEach(b => b.addEventListener("click", () => {
+    if (tokenGet()) analyzeLive(b.dataset.report, false, true);  // refresh from SEC + transcript first, then show the report
+    else location.hash = "report-" + b.dataset.id;               // visitors: report from the latest daily update
+  }));
+}
+function openOwner() { const d = $("#owner"); if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "center" }); } }
+function wireOwner() {
+  const inp = $("#o-token"), st = $("#o-status");
+  const show = () => { st.textContent = tokenGet() ? "Connected. Live analysis is on in this browser." : "Not connected."; };
+  $("#o-save").addEventListener("click", async () => {
+    tokenSet(inp.value.trim()); inp.value = ""; st.textContent = "Checking…";
+    try { await gh("/actions/workflows"); show(); route(); } catch (e) { tokenSet(""); st.textContent = e.message; }
+  });
+  $("#o-clear").addEventListener("click", () => { tokenSet(""); show(); route(); });
+  show();
+}
+
+// ---------- one-page report ----------
+function renderReport(id) {
+  const c = S.calls.find(x => x.id === id);
+  const view = $("#view");
+  if (!c) { view.innerHTML = `<button class="back" data-home>← All companies</button><div class="empty">That call isn’t in coverage yet.</div>`; return; }
+  const g = ok(c.guidance), r = ok(c.reported), t = ok(c.tone);
+  const count = (d) => g.filter(i => i.direction === d).length;
+  const dirs = ["raised", "lowered", "maintained", "initiated"].map(d => [d, count(d)]).filter(x => x[1]);
+  const pos = t.filter(i => i.signal === "positive").length, neg = t.filter(i => i.signal === "cautious" || i.signal === "negative").length;
+  const keyG = g.filter(i => i.direction === "raised" || i.direction === "lowered").concat(g).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
+  const takeaways = [
+    dirs.length ? `Guidance: ${dirs.map(([d, n]) => `${n} ${d}`).join(", ")} across ${g.length} items.` : "No forward guidance items were verified.",
+    ...keyG.map(i => `${i.metric} (${i.period}): ${fmtRange(i)}${i.basis ? " · " + esc(i.basis) : ""}${i.direction !== "unclear" ? ` <span class="chip ${esc(i.direction)}">${esc(i.direction)}</span>` : ""}`),
+    r.length ? `Reported: ${r.slice(0, 3).map(i => `${esc(i.metric)} ${fmt(i.value, i.unit)}${i.yoy_change_pct != null ? ` (${i.yoy_change_pct > 0 ? "+" : ""}${i.yoy_change_pct}% y/y)` : ""}`).join("; ")}.` : "",
+    t.length ? `Management tone: ${pos} positive, ${neg} cautious or negative signals.` : "",
+  ].filter(Boolean);
+  const trunc = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s);
+  view.innerHTML = `
+  <div class="noprint report-bar"><button class="back" data-open="${esc(c.id)}">← Full analysis</button>
+    <div class="actions">${tokenGet() ? `<button class="btn ghost" data-report="${esc(c.ticker)}" data-id="${esc(c.id)}">Regenerate</button>` : ""}<button class="btn" id="r-print">Print / save as PDF</button></div></div>
+  <div class="noprint live-status status" data-state="${LIVE.state}">${LIVE.msg}</div>
+  <article class="report">
+    <header class="r-head">
+      <div><div class="r-kicker">Earnings call brief</div><h1>${esc(c.company)} <span>(${esc(c.ticker)})</span></h1>
+        <div class="r-meta">${esc(c.quarter)} · call on ${esc(c.call_date || "")} · ${LIVE.checkedAt && LIVE.ticker === c.ticker ? "sources re-checked " + LIVE.checkedAt.toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "data as of " + esc((c.analyzed_at || "").slice(0, 10))}</div></div>
+      <div class="r-badge">${c.counts.verified}/${c.counts.total}<small>items verified against source</small></div>
+    </header>
+    <section><h3>Key takeaways</h3><ul class="r-take">${takeaways.map(x => `<li>${x}</li>`).join("")}</ul></section>
+    <div class="r-cols">
+      <section><h3>Forward guidance</h3>
+        <table><thead><tr><th>Metric</th><th>Period</th><th class="num">Outlook</th><th>Framing</th></tr></thead><tbody>
+        ${g.slice(0, 11).map(i => `<tr><td>${esc(i.metric)}</td><td class="per">${esc(i.period)}</td><td class="num">${fmtRange(i)}</td><td><span class="chip ${esc(i.direction)}">${esc(i.direction)}</span></td></tr>`).join("") || `<tr><td colspan="4">None verified</td></tr>`}
+        </tbody></table>${g.length > 11 ? `<p class="r-more">+${g.length - 11} more on the site</p>` : ""}</section>
+      <section><h3>Reported results</h3>
+        <table><thead><tr><th>Metric</th><th class="num">Value</th><th class="num">Y/Y</th></tr></thead><tbody>
+        ${r.slice(0, 11).map(i => `<tr><td>${esc(i.metric)}</td><td class="num">${fmt(i.value, i.unit)}</td><td class="num">${i.yoy_change_pct != null ? (i.yoy_change_pct > 0 ? "+" : "") + i.yoy_change_pct + "%" : "–"}</td></tr>`).join("") || `<tr><td colspan="3">None verified</td></tr>`}
+        </tbody></table>${r.length > 11 ? `<p class="r-more">+${r.length - 11} more on the site</p>` : ""}</section>
+    </div>
+    <section><h3>Management tone</h3><ul class="r-tone">
+      ${t.slice(0, 5).map(i => `<li><span class="chip ${esc(i.signal)}">${esc(i.signal)}</span> <b>${esc(i.topic)}:</b> ${esc(i.summary)} <q>${esc(trunc(i.source_quote, 170))}</q></li>`).join("") || "<li>None verified</li>"}
+    </ul></section>
+    <footer class="r-foot">Sources: ${(c.links || []).map(l => esc(l.label)).join(" · ")}. Extracted by Claude; every figure was checked in code against the
+      verbatim source text before publication (${c.counts.rejected} item${c.counts.rejected === 1 ? "" : "s"} rejected). Not investment advice.
+      Earnings Call Tracker · ${esc(location.host + location.pathname)}</footer>
+  </article>`;
+  $("#r-print").addEventListener("click", () => window.print());
+  wireAnalyze();
 }
 
 // ---------- routing ----------
 function route() {
   const id = decodeURIComponent(location.hash.slice(1));
-  if (id && S.loaded) renderBrief(id); else renderHome($("#q").value.trim());
+  if (id && S.loaded && id.startsWith("report-")) renderReport(id.slice(7));
+  else if (id && S.loaded) { renderBrief(id); wireAnalyze(); }
+  else renderHome($("#q").value.trim());
   window.scrollTo(0, 0);
 }
 document.addEventListener("click", (e) => {
@@ -398,6 +576,7 @@ renderHome("");
     $("#notice").className = "notice bad"; $("#notice").textContent = "Couldn’t load the call data. Refresh the page to try again.";
   }
   S.loaded = true; route();
+  wireOwner();
 })();
 </script>
 </body>

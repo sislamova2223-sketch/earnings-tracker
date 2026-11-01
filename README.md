@@ -7,8 +7,9 @@ SEC EDGAR for each covered company's newest earnings release. When a new one app
 transcript and has Claude extract **forward guidance, reported results and management tone**. Before anything is
 published, Python code **checks every figure against the source documents**.
 
-Current coverage: **Bloom Energy (BE), Microsoft (MSFT), Alphabet (GOOGL)**. Anyone with access can add a company
-from the website.
+Current coverage: **Bloom Energy (BE), Microsoft (MSFT), Alphabet (GOOGL)**. Search any other US-listed ticker and the
+site analyzes it live in 1–3 minutes, then keeps it updated. Any company can be turned into a **one-page report**
+that re-checks the sources the moment you generate it.
 
 ---
 
@@ -32,7 +33,9 @@ Investor relations transcript ────────┘     (every item carrie
    is already on the site, nothing happens, so the daily run costs nothing on quiet days.
 2. **Fetch.** It downloads the press release (Exhibit 99.1) from EDGAR. `transcripts.py` then looks for the call
    transcript, first on the company's investor relations site (Microsoft and Alphabet publish theirs), then at a
-   transcript URL pinned in `coverage.json`, then on the Motley Fool's free transcript page. If none is found,
+   transcript URL pinned in `coverage.json`, then on the Motley Fool. For any ticker, the Fool's quote page
+   (`fool.com/quote/<exchange>/<ticker>/`) lists every transcript, so the pipeline picks the one published
+   right after the earnings release, with no hand-written URL needed. If none is found,
    the call is analyzed from the press release alone and marked as such on the site.
 3. **Extract.** `extract.py` sends both documents to Claude with a forced tool call, so the reply is JSON that
    matches the schema in `schema.py`. The prompt makes the model **copy, not compute**: every item must include
@@ -53,9 +56,19 @@ Investor relations transcript ────────┘     (every item carrie
 - **Open a company** to see its guidance table (range, basis, and whether management raised, lowered or
   maintained it), reported results, tone signals with the supporting quote, links to the transcript and SEC
   filing, and the audit log.
-- **Request a company:** type a ticker and click *Request analysis*. This opens a GitHub issue titled `Add NVDA`.
-  The `request.yml` workflow adds the company, analyzes its latest call, comments on the issue with the result,
-  and closes it. Only the repo owner's requests run, so strangers can't spend the API credit.
+- **Analyze any company live:** search a ticker that isn't covered and click *Analyze NVDA now*, or use the
+  *Analyze any company* box. The page starts the `update` workflow for that ticker, shows progress while it runs, and
+  opens the finished analysis, which is then saved to the site for every visitor.
+- **Generate a one-page report:** on any company, click *Generate one-page report*. The tracker first re-checks SEC and
+  the transcript sources for a newer earnings call (and analyzes it if there is one), then builds a printable
+  Letter-size brief: key takeaways, guidance table, reported results, management tone with quotes, and sources.
+  Use *Print / save as PDF* to download it. Visitors without owner access get the report from the latest daily update.
+- **Owner access:** live analysis and report refreshes start GitHub Actions, so they need a GitHub token. Open
+  *Owner settings* at the bottom of the site and paste a fine-grained token limited to this repo with
+  **Actions: Read and write** and **Contents: Read-only**. It's stored only in your browser. Visitors can browse and
+  print reports but can't spend your API credit.
+- **Request by issue (alternative):** opening an issue titled `Add NVDA` also works (`request.yml`); only the repo
+  owner's issues run.
 
 ## Setup (one time)
 
@@ -63,8 +76,8 @@ Investor relations transcript ────────┘     (every item carrie
    credit. Each call analyzed costs roughly $0.05–0.20.
 2. **Add it to GitHub:** in the repo, go to **Settings → Secrets and variables → Actions → New repository secret**,
    name `ANTHROPIC_API_KEY`.
-3. **SEC contact (recommended):** in the same place, on the **Variables** tab, add `SEC_USER_AGENT` with your name
-   and email, e.g. `Jane Doe jane@example.com`. SEC asks automated clients to identify themselves.
+3. **SEC contact (required):** in the same place, on the **Variables** tab, add `SEC_USER_AGENT` with your name
+   and email, e.g. `Jane Doe jane@example.com`. SEC refuses automated clients without a real contact address.
 4. **Turn on the website:** go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 5. **First run:** go to **Actions → Update earnings calls → Run workflow**. After that it runs on its own every weekday
    evening, around 6–7 pm ET.
@@ -140,6 +153,7 @@ python -m guidance_tracker run NWSC --quarter "Q1 FY26" \
 - [ ] Quarter-over-quarter diff: flag guidance raised, lowered or dropped versus the prior call
 - [ ] Energy names (XOM, CVX, COP) with sector-specific fields: production, realized prices, buybacks
 - [ ] Email digest when a covered company reports
+- [ ] Quarter-over-quarter section in the one-page report
 
 ---
 

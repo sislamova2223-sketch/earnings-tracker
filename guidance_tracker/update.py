@@ -40,7 +40,8 @@ def add_company(ticker: str) -> dict:
             return c
     info = edgar.lookup(ticker)
     name = info["sec_name"].title() if info["sec_name"].isupper() else info["sec_name"]
-    entry = {"ticker": ticker, "company": name, "cik": info["cik"], "fy_end_month": info["fy_end_month"],
+    entry = {"ticker": ticker, "company": name, "cik": info["cik"], "exchange": info["exchange"],
+             "fy_end_month": info["fy_end_month"],
              "transcript": "fool", "fool_slug": f"{slugify(name)}-{ticker.lower()}"}
     companies.append(entry)
     save_coverage(companies)
@@ -94,7 +95,7 @@ def update_company(company: dict, force: bool = False, model: str = DEFAULT_MODE
     pr_text, pr_url = edgar.fetch_press_release(info["cik"], filing["accession"])
     sources = {"press_release": pr_text}
     links = []
-    found = find_transcript(company, q, filed)
+    found = find_transcript({**company, "exchange": company.get("exchange") or info["exchange"]}, q, filed)
     if found:
         text, url, label = found
         sources["transcript"] = text

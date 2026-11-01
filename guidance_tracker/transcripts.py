@@ -3,7 +3,9 @@
 Order of preference:
   1. The company's own investor relations site (finders below; add more as coverage grows).
   2. A transcript URL pinned by hand in coverage.json ("transcript_urls": {"FY27 Q1": "https://..."}).
-  3. The Motley Fool's free transcript, whose URL follows a predictable pattern.
+  3. The Motley Fool's free transcript. Its quote page (fool.com/quote/<exchange>/<ticker>/) lists every
+     transcript for the company, so any ticker can be found without knowing the URL in advance.
+     A guessed URL pattern is the last resort.
 If nothing is found the call is analyzed from the press release alone and flagged on the site.
 """
 from __future__ import annotations
@@ -56,7 +58,29 @@ def _alphabet(q: dict) -> tuple[str, str] | None:
 IR_FINDERS = {"microsoft": _microsoft, "alphabet": _alphabet}
 
 
+def _fool_quote_page(company: dict, call_date: date) -> tuple[str, str] | None:
+    """Find the transcript published closest after the earnings date on the stock's Fool quote page."""
+    ex = company.get("exchange") or "nyse"
+    try:
+        html = requests.get(f"https://www.fool.com/quote/{ex}/{company['ticker'].lower()}/",
+                            headers=BROWSER_HEADERS, timeout=30).text
+    except requests.RequestException:
+        return None
+    best = None
+    for m in re.finditer(r"earnings/call-transcripts/(\d{4})/(\d{2})/(\d{2})/([a-z0-9-]+)/", html):
+        d = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        gap = (d - call_date).days
+        if -2 <= gap <= 7 and (best is None or abs(gap) < best[0]):
+            best = (abs(gap), "https://www.fool.com/" + m.group(0))
+    if not best:
+        return None
+    text = _get_text(best[1])
+    return (text, best[1]) if text else None
+
+
 def _fool(company: dict, q: dict, call_date: date) -> tuple[str, str] | None:
+    if hit := _fool_quote_page(company, call_date):
+        return hit
     slug = company.get("fool_slug")
     if not slug:
         return None

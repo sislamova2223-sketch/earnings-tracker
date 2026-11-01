@@ -60,15 +60,20 @@ def lookup(ticker: str, cik: int | None = None) -> dict:
     Pass a known CIK to skip downloading SEC's full ticker list."""
     if cik:
         sub = submissions(int(cik))
-        return {"cik": int(cik), "sec_name": sub.get("name", ticker),
+        return {"cik": int(cik), "sec_name": sub.get("name", ticker), "exchange": _exchange(sub),
                 "fy_end_month": int((sub.get("fiscalYearEnd") or "1231")[:2])}
     for row in _tickers().values():
         if row["ticker"].upper() == ticker.upper():
             cik = int(row["cik_str"])
             sub = submissions(cik)
             fye = sub.get("fiscalYearEnd") or "1231"
-            return {"cik": cik, "sec_name": row["title"], "fy_end_month": int(fye[:2])}
+            return {"cik": cik, "sec_name": row["title"], "exchange": _exchange(sub), "fy_end_month": int(fye[:2])}
     raise ValueError(f"Ticker {ticker} not found on SEC EDGAR")
+
+
+def _exchange(sub: dict) -> str:
+    ex = [e.lower() for e in (sub.get("exchanges") or []) if e]
+    return "nasdaq" if any("nasdaq" in e for e in ex) else (ex[0] if ex else "nyse")
 
 
 @lru_cache(maxsize=64)
