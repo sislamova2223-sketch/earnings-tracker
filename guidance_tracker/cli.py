@@ -22,10 +22,13 @@ def cmd_update(a):
     missing = wanted - {c["ticker"] for c in cov}
     if missing:
         sys.exit(f"Not in coverage.json: {', '.join(sorted(missing))}. Use `add` first.")
+    from .edgar import SECThrottled
     failures = 0
     for c in targets:
         try:
             print(update_company(c, force=a.force, model=a.model))
+        except SECThrottled as e:  # not our bug; the next scheduled run gets a fresh runner IP
+            print(f"{c['ticker']}: SKIPPED - {e}")
         except Exception as e:  # keep going so one bad company doesn't block the rest
             failures += 1
             print(f"{c['ticker']}: FAILED - {e}")

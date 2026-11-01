@@ -40,7 +40,7 @@ def add_company(ticker: str) -> dict:
             return c
     info = edgar.lookup(ticker)
     name = info["sec_name"].title() if info["sec_name"].isupper() else info["sec_name"]
-    entry = {"ticker": ticker, "company": name, "fy_end_month": info["fy_end_month"],
+    entry = {"ticker": ticker, "company": name, "cik": info["cik"], "fy_end_month": info["fy_end_month"],
              "transcript": "fool", "fool_slug": f"{slugify(name)}-{ticker.lower()}"}
     companies.append(entry)
     save_coverage(companies)
@@ -81,7 +81,7 @@ def rebuild_index() -> None:
 def update_company(company: dict, force: bool = False, model: str = DEFAULT_MODEL, log=print) -> str:
     """Analyze the company's latest earnings call if it isn't on the site yet. Returns a status line."""
     t = company["ticker"]
-    info = edgar.lookup(t)
+    info = edgar.lookup(t, company.get("cik"))
     filing = edgar.latest_earnings_8k(info["cik"])
     done = [c for c in existing_calls().values() if c["ticker"] == t and c.get("accession") == filing["accession"]]
     if done and not force:

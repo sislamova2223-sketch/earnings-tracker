@@ -27,16 +27,27 @@ def _session() -> requests.Session:
     return s
 
 
+class SECThrottled(RuntimeError):
+    """SEC is rate-limiting this machine's IP (common on shared CI runners). Try again later."""
+
+
+RETRY_WAITS = (20, 60, 120)  # seconds; SEC lifts most throttles within ~10 minutes
+
+
 def _get(url: str) -> requests.Response:
-    time.sleep(0.15)  # stay well under SEC's 10 requests/second limit
-    r = _session().get(url, timeout=30)
-    if r.status_code == 403:
-        import re as _re
-        msg = _re.sub(r"<[^>]+>", " ", r.text)
-        msg = _re.sub(r"\s+", " ", msg).strip()[:300]
-        raise RuntimeError(f"SEC refused {url} (403): {msg} | UA sent: {_session().headers['User-Agent']}")
-    r.raise_for_status()
-    return r
+    for wait in (*RETRY_WAITS, None):
+        time.sleep(0.15)  # stay well under SEC's 10 requests/second limit
+        r = _session().get(url, timeout=30)
+        throttled = r.status_code == 429 or (r.status_code == 403 and "Rate Threshold" in r.text)
+        if not throttled:
+            if r.status_code == 403:
+                raise RuntimeError(f"SEC refused {url} (403). Check SEC_USER_AGENT is 'Name email@domain'.")
+            r.raise_for_status()
+            return r
+        if wait is None:
+            raise SECThrottled(f"SEC is rate-limiting this runner ({url}); will retry on the next run")
+        print(f"  SEC throttled this runner, waiting {wait}s...", flush=True)
+        time.sleep(wait)
 
 
 @lru_cache(maxsize=1)
@@ -44,8 +55,13 @@ def _tickers() -> dict:
     return _get(TICKERS_URL).json()
 
 
-def lookup(ticker: str) -> dict:
-    """CIK, SEC company name and fiscal-year-end month for a ticker."""
+def lookup(ticker: str, cik: int | None = None) -> dict:
+    """CIK, SEC company name and fiscal-year-end month for a ticker.
+    Pass a known CIK to skip downloading SEC's full ticker list."""
+    if cik:
+        sub = submissions(int(cik))
+        return {"cik": int(cik), "sec_name": sub.get("name", ticker),
+                "fy_end_month": int((sub.get("fiscalYearEnd") or "1231")[:2])}
     for row in _tickers().values():
         if row["ticker"].upper() == ticker.upper():
             cik = int(row["cik_str"])

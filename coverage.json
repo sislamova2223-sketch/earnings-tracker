@@ -3,6 +3,7 @@
     {
       "ticker": "BE",
       "company": "Bloom Energy",
+      "cik": 1664703,
       "fy_end_month": 12,
       "transcript": "fool",
       "fool_slug": "bloom-energy-be"
@@ -10,6 +11,7 @@
     {
       "ticker": "GOOGL",
       "company": "Alphabet",
+      "cik": 1652044,
       "fy_end_month": 12,
       "transcript": "alphabet",
       "fool_slug": "alphabet-googl"
@@ -17,6 +19,7 @@
     {
       "ticker": "MSFT",
       "company": "Microsoft",
+      "cik": 789019,
       "fy_end_month": 6,
       "transcript": "microsoft",
       "fool_slug": "microsoft-msft"
