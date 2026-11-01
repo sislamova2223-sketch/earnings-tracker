@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earnings Call Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout: research-terminal index. Search bar on top, coverage grid, then a dense single-company brief. */
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --ink: #142033;
+  --muted: #5c6b80;
+  --line: #dce2ea;
+  --accent: #1d4e9e;
+  --accent-soft: #e5edf9;
+  --good: #23704a; --good-soft: #e3f2ea;
+  --warn: #9a6200; --warn-soft: #fbf0dc;
+  --bad: #a3302b;  --bad-soft: #f9e4e2;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1520; --surface: #172030; --ink: #e6ebf2; --muted: #93a1b5; --line: #2a3546;
+    --accent: #8fb3f0; --accent-soft: #1d2c46;
+    --good: #6fcf9b; --good-soft: #17332a; --warn: #f0b860; --warn-soft: #3a2c14; --bad: #f08a83; --bad-soft: #3d1d1c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1520; --surface: #172030; --ink: #e6ebf2; --muted: #93a1b5; --line: #2a3546;
+  --accent: #8fb3f0; --accent-soft: #1d2c46;
+  --good: #6fcf9b; --good-soft: #17332a; --warn: #f0b860; --warn-soft: #3a2c14; --bad: #f08a83; --bad-soft: #3d1d1c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+a { color: var(--accent); }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 48px; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 22px 0 16px; border-bottom: 2px solid var(--ink); }
+.brand { display: flex; flex-direction: column; }
+.brand h1 { font: 600 26px/1.1 var(--font-display); margin: 0; letter-spacing: .01em; text-wrap: balance; }
+.brand span { color: var(--muted); font-size: 13px; }
+.searchbox { flex: 1 1 320px; max-width: 460px; position: relative; }
+.searchbox input { width: 100%; padding: 10px 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--surface); padding: 9px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.notice { margin: 16px 0; padding: 10px 14px; border-radius: 6px; background: var(--warn-soft); color: var(--warn); font-size: 14px; }
+.notice.info { background: var(--accent-soft); color: var(--accent); }
+.notice.bad { background: var(--bad-soft); color: var(--bad); }
+.notice:empty { display: none; }
+
+h2.sec { font: 600 13px/1 var(--font-display); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 28px 0 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; text-align: left; transition: border-color .15s; }
+.card:hover { border-color: var(--accent); }
+.card .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.tick { font: 600 22px/1 var(--font-display); }
+.qtr { font: 500 12px var(--font-num); color: var(--muted); }
+.cname { color: var(--muted); font-size: 13px; margin-top: -6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; padding: 2px 7px; border-radius: 3px; background: var(--accent-soft); color: var(--accent); }
+.chip.raised, .chip.positive { background: var(--good-soft); color: var(--good); }
+.chip.lowered, .chip.negative { background: var(--bad-soft); color: var(--bad); }
+.chip.cautious { background: var(--warn-soft); color: var(--warn); }
+.chip.maintained, .chip.neutral, .chip.unclear { background: var(--line); color: var(--muted); }
+.headline { font-size: 14px; }
+.verif { font: 500 12px var(--font-num); color: var(--good); }
+
+.hits { display: flex; flex-direction: column; gap: 8px; }
+.hit { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; cursor: pointer; font-size: 14px; text-align: left; }
+.hit b { font-family: var(--font-display); }
+mark { background: var(--warn-soft); color: inherit; padding: 0 1px; }
+
+.brief { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; margin-top: 18px; }
+.brief-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-end; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.brief-head h2 { font: 600 28px/1.1 var(--font-display); margin: 0; text-wrap: balance; }
+.meta { color: var(--muted); font-size: 13px; }
+.badge { font: 500 12px var(--font-num); padding: 4px 9px; border-radius: 4px; background: var(--good-soft); color: var(--good); white-space: nowrap; }
+.brief h3 { font: 600 13px/1 var(--font-display); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin: 22px 0 8px; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-weight: 600; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); padding: 6px 8px; white-space: nowrap; }
+td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.per { white-space: nowrap; }
+td.num, th.num { text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td .q { display: block; color: var(--muted); font-size: 12px; font-style: italic; margin-top: 2px; }
+.src { font: 500 11px var(--font-num); color: var(--muted); }
+.tone { display: flex; flex-direction: column; }
+.tone li { list-style: none; padding: 10px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+.tone ul { margin: 0; padding: 0; }
+.tone .q { color: var(--muted); font-style: italic; font-size: 13px; display: block; margin-top: 3px; }
+details.audit { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13px; }
+details.audit summary { cursor: pointer; color: var(--muted); }
+.rej { padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.rej .why { color: var(--bad); }
+.links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; margin-top: 8px; }
+.back { background: none; border: none; color: var(--accent); cursor: pointer; padding: 14px 0 0; font-size: 14px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+.panel h2 { font: 600 20px var(--font-display); margin: 0; }
+.panel p { margin: 0; color: var(--muted); font-size: 14px; max-width: 70ch; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.panel input, .panel textarea { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font-weight: 400; font-size: 14px; }
+.panel textarea { min-height: 150px; font-family: var(--font-num); font-size: 12px; resize: vertical; }
+.actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.status { font-size: 13px; color: var(--muted); }
+.empty { color: var(--muted); padding: 24px; text-align: center; background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; }
+footer { margin-top: 36px; color: var(--muted); font-size: 12px; max-width: 80ch; }
+@media (max-width: 520px) { .tone li { grid-template-columns: 1fr; gap: 2px; } .brief { padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Earnings Call Tracker</h1>
+      <span>Guidance, results and management tone from the latest earnings calls · every figure checked against the source</span>
+    </div>
+    <div class="searchbox">
+      <label for="q" style="position:absolute;left:-9999px">Search companies and calls</label>
+      <input id="q" type="search" placeholder="Search a ticker, company, or topic (e.g. capex, Azure, margin)" autocomplete="off">
+    </div>
+  </header>
+
+  <div id="notice" class="notice"></div>
+  <main id="view"></main>
+
+  <footer>
+    How it works: Claude reads each company’s latest call transcript and press release and returns structured items. Each item must quote its source word for word.
+    Python code then checks every quote against the source text and every number against its quote, and any item that fails is left
+    out and listed in that company's audit log. New calls are picked up automatically every day.
+    <span id="updated"></span> Built by Sabina Islamova · <a href="https://github.com/sislamova2223-sketch/earnings-tracker">source code</a>.
+  </footer>
+</div>
+
+<script>
+"use strict";
+// ---------- state ----------
+const S = { calls: [], loaded: false };
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// ---------- validator (same rules as the Python validate.py) ----------
+const TR = { "‘": "'", "’": "'", "“": '"', "”": '"', "–": "-", "—": "-", "−": "-", "‑": "-", "‐": "-", " ": " ", " ": " " };
+const translate = (t) => t.replace(/[‘’“”–—−‑‐  ]/g, c => TR[c]);
+const normalize = (t) => translate(String(t)).toLowerCase().replace(/\|/g, " ").replace(/\s+/g, " ").trim();
+
+function findQuote(quote, sources) {
+  const pieces = String(quote).split(/\.\.\.|…/).map(normalize).filter(Boolean);
+  if (!pieces.length) return null;
+  for (const [name, text] of Object.entries(sources)) {
+    const doc = normalize(text);
+    let pos = 0, ok = true, started = false;
+    for (const p of pieces) {
+      const i = doc.indexOf(p, pos);
+      if (i === -1 || (started && i - pos > 600)) { ok = false; break; }
+      started = true; pos = i + p.length;
+    }
+    if (ok) return name;
+  }
+  return null;
+}
+const NUM = /(\$\s*)?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(\s*(?:%|percent|percentage points?|points?|basis points|bps|billion|million|bn|mm|m\b|b\b))?/gi;
+function numbersIn(text) {
+  const out = [];
+  for (const m of translate(String(text)).matchAll(NUM)) {
+    const v = parseFloat(m[2].replace(/,/g, ""));
+    const after = (m[3] || "").trim().toLowerCase();
+    let kind = "plain";
+    if (/^(%|percent|percentage|point|basis|bps)/.test(after)) kind = "pct";
+    else if (m[1] || ["billion", "million", "bn", "mm", "m", "b"].includes(after)) kind = "usd";
+    out.push({ v, kind });
+  }
+  return out;
+}
+const COMPAT = { percent: ["pct", "plain"], usd_billions: ["usd", "plain"], usd_millions: ["usd", "plain"], usd_per_share: ["usd", "plain"], other: ["pct", "usd", "plain"] };
+function numberSupported(value, unit, toks) {
+  const kinds = COMPAT[unit] || COMPAT.other, target = Math.abs(value);
+  const scales = (unit === "usd_billions" || unit === "usd_millions") ? [1, 1000, 0.001] : [1];
+  return toks.some(t => kinds.includes(t.kind) && scales.some(s => Math.abs(t.v * s - target) < 1e-6 * Math.max(1, target)));
+}
+function checkItem(item, fields, sources, isGuidance) {
+  const reasons = [];
+  const doc = findQuote(item.source_quote || "", sources);
+  if (!doc) reasons.push("quote not found word for word in the source");
+  const toks = numbersIn(item.source_quote || "");
+  for (const [f, unit] of fields) {
+    const v = item[f];
+    if (v === null || v === undefined || v === "") continue;
+    if (typeof v !== "number" || !isFinite(v)) { reasons.push(`${f} is not a number`); continue; }
+    if (!numberSupported(v, unit, toks)) reasons.push(`${f} = ${v} (${unit}) does not appear in the quote`);
+  }
+  if (isGuidance) {
+    if (item.low == null && item.high == null && !item.qualitative) reasons.push("no number and no qualitative description");
+    if (item.low != null && item.high != null && item.low > item.high) reasons.push("low is greater than high");
+  }
+  return { status: reasons.length ? "rejected" : "verified", source_doc: doc, reasons };
+}
+function validateExtraction(ex, sources) {
+  const g = (ex.guidance || []).map(i => ({ ...i, check: checkItem(i, [["low", i.unit], ["high", i.unit]], sources, true) }));
+  const r = (ex.reported || []).map(i => ({ ...i, check: checkItem(i, [["value", i.unit], ["yoy_change_pct", "percent"]], sources, false) }));
+  const t = (ex.tone || []).map(i => ({ ...i, check: checkItem(i, [], sources, false) }));
+  const all = [...g, ...r, ...t];
+  const verified = all.filter(i => i.check.status === "verified").length;
+  return { guidance: g, reported: r, tone: t, counts: { total: all.length, verified, rejected: all.length - verified } };
+}
+
+// ---------- formatting ----------
+function fmt(v, unit) {
+  if (v === null || v === undefined) return "";
+  const trim = (x, d) => x.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: d });
+  if (unit === "usd_billions") return "$" + trim(v, 2) + "B";
+  if (unit === "usd_millions") return "$" + trim(v, 1) + "M";
+  if (unit === "usd_per_share") return "$" + v.toFixed(2);
+  if (unit === "percent") return trim(v, 2) + "%";
+  return trim(v, 2);
+}
+function fmtRange(i) {
+  if (i.low == null && i.high == null) return esc(i.qualitative || "");
+  if (i.high == null || i.low === i.high) return fmt(i.low, i.unit);
+  return fmt(i.low, i.unit) + " – " + fmt(i.high, i.unit);
+}
+const srcTag = (c) => ({ press_release: "8-K", transcript: "Call" }[c.source_doc] || c.source_doc || "");
+const ok = (arr) => (arr || []).filter(i => i.check && i.check.status === "verified");
+
+// ---------- data ----------
+function latestByTicker() {
+  const m = new Map();
+  for (const c of S.calls) {
+    const prev = m.get(c.ticker);
+    if (!prev || String(c.call_date) > String(prev.call_date)) m.set(c.ticker, c);
+  }
+  return [...m.values()].sort((a, b) => a.ticker.localeCompare(b.ticker));
+}
+
+// ---------- views ----------
+function headline(c) {
+  const g = ok(c.guidance);
+  const raised = g.filter(i => i.direction === "raised").length, lowered = g.filter(i => i.direction === "lowered").length;
+  const first = g.find(i => i.direction === "raised") || g[0];
+  return { raised, lowered, first };
+}
+function renderHome(q) {
+  const view = $("#view");
+  if (!S.loaded) { view.innerHTML = `<div class="empty">Loading coverage…</div>`; return; }
+  const list = latestByTicker();
+  let html = "";
+  if (q) {
+    const ql = q.toLowerCase();
+    const comp = list.filter(c => c.ticker.toLowerCase().includes(ql) || (c.company || "").toLowerCase().includes(ql));
+    const hits = [];
+    for (const c of list) {
+      for (const [kind, arr] of [["Guidance", ok(c.guidance)], ["Result", ok(c.reported)], ["Tone", ok(c.tone)]]) {
+        for (const i of arr) {
+          const hay = [i.metric, i.topic, i.summary, i.basis, i.qualitative, i.source_quote].filter(Boolean).join(" ");
+          if (hay.toLowerCase().includes(ql)) hits.push({ c, kind, i, hay });
+        }
+      }
+    }
+    if (comp.length || !hits.length) html += `<h2 class="sec">Companies matching “${esc(q)}”</h2>`;
+    if (comp.length || !hits.length) html += comp.length ? `<div class="grid">${comp.map(cardHTML).join("")}</div>`
+      : `<div class="empty">No company in coverage matches “${esc(q)}”. Request it below.</div>`;
+    if (hits.length) {
+      const hl = (s) => esc(s).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), m => `<mark>${m}</mark>`);
+      html += `<h2 class="sec">${hits.length} mention${hits.length > 1 ? "s" : ""} in calls</h2><div class="hits">` +
+        hits.slice(0, 40).map(h => `<button class="hit" data-open="${esc(h.c.id)}"><b>${esc(h.c.ticker)}</b> · ${h.kind} · ${esc(h.i.metric || h.i.topic)}<br><span class="meta">${hl((h.i.source_quote || "").slice(0, 240))}</span></button>`).join("") + `</div>`;
+    }
+  } else {
+    html += `<h2 class="sec">Coverage · latest call per company</h2>`;
+    html += list.length ? `<div class="grid">${list.map(cardHTML).join("")}</div>`
+      : `<div class="empty">No calls analyzed yet. Request a company below.</div>`;
+  }
+  html += analyzePanelHTML();
+  view.innerHTML = html;
+  wireAnalyze();
+}
+function cardHTML(c) {
+  const h = headline(c);
+  const tone = ok(c.tone);
+  const pos = tone.filter(t => t.signal === "positive").length, cau = tone.filter(t => t.signal === "cautious" || t.signal === "negative").length;
+  return `<button class="card" data-open="${esc(c.id)}">
+    <div class="row1"><span class="tick">${esc(c.ticker)}</span><span class="qtr">${esc(c.quarter)} · ${esc(c.call_date || "")}</span></div>
+    <div class="cname">${esc(c.company)}</div>
+    <div class="headline">${h.first ? `<b>${esc(h.first.metric)}</b> (${esc(h.first.period)}): ${fmtRange(h.first)}` : "No numeric guidance given"}</div>
+    <div class="chips">
+      ${h.raised ? `<span class="chip raised">${h.raised} raised</span>` : ""}
+      ${h.lowered ? `<span class="chip lowered">${h.lowered} lowered</span>` : ""}
+      <span class="chip positive">${pos} positive</span><span class="chip cautious">${cau} cautious</span>
+    </div>
+    <div class="verif">${c.counts?.verified ?? 0}/${c.counts?.total ?? 0} items verified</div>
+  </button>`;
+}
+function renderBrief(id) {
+  const c = S.calls.find(x => x.id === id);
+  const view = $("#view");
+  if (!c) { view.innerHTML = `<button class="back" data-home>← All companies</button><div class="empty">That call isn’t in coverage yet.</div>`; return; }
+  const g = ok(c.guidance), r = ok(c.reported), t = ok(c.tone);
+  const rej = [...c.guidance, ...c.reported, ...c.tone].filter(i => i.check?.status === "rejected");
+  const links = (c.links || []).map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("");
+  view.innerHTML = `
+  <button class="back" data-home>← All companies</button>
+  <article class="brief">
+    <div class="brief-head">
+      <div><h2>${esc(c.company)} (${esc(c.ticker)})</h2>
+        <div class="meta">${esc(c.quarter)} earnings call · ${esc(c.call_date || "")} · analyzed ${esc((c.analyzed_at || "").slice(0, 10))}${c.model ? " · " + esc(c.model) : ""}</div>
+        ${links ? `<div class="links">${links}</div>` : ""}</div>
+      <span class="badge">${c.counts.verified} of ${c.counts.total} items verified</span>
+    </div>
+    ${c.transcript_found === false ? `<div class="notice">No call transcript was found automatically, so this analysis uses the press release only.</div>` : ""}
+    <h3>Forward guidance</h3>
+    ${g.length ? `<div class="tablewrap"><table><thead><tr><th>Metric</th><th>Period</th><th class="num">Outlook</th><th>Basis</th><th>Framing</th><th>Src</th></tr></thead><tbody>
+      ${g.map(i => `<tr><td>${esc(i.metric)}<span class="q">“${esc(i.source_quote)}”</span></td><td class="per">${esc(i.period)}</td><td class="num">${fmtRange(i)}</td><td>${esc(i.basis || "")}</td><td><span class="chip ${esc(i.direction)}">${esc(i.direction)}</span></td><td class="src">${srcTag(i.check)}</td></tr>`).join("")}
+    </tbody></table></div>` : `<p class="meta">No verified guidance items.</p>`}
+    <h3>Reported results</h3>
+    ${r.length ? `<div class="tablewrap"><table><thead><tr><th>Metric</th><th>Period</th><th class="num">Value</th><th class="num">Y/Y</th><th>Src</th></tr></thead><tbody>
+      ${r.map(i => `<tr><td>${esc(i.metric)}</td><td class="per">${esc(i.period)}</td><td class="num">${fmt(i.value, i.unit)}</td><td class="num">${i.yoy_change_pct != null ? (i.yoy_change_pct > 0 ? "+" : "") + i.yoy_change_pct + "%" : ""}</td><td class="src">${srcTag(i.check)}</td></tr>`).join("")}
+    </tbody></table></div>` : `<p class="meta">No verified reported metrics.</p>`}
+    <h3>Management tone</h3>
+    ${t.length ? `<div class="tone"><ul>${t.map(i => `<li><span><span class="chip ${esc(i.signal)}">${esc(i.signal)}</span></span><div><b>${esc(i.topic)}:</b> ${esc(i.summary)}<span class="q">“${esc(i.source_quote)}” <span class="src">[${srcTag(i.check)}]</span></span></div></li>`).join("")}</ul></div>` : `<p class="meta">No verified tone signals.</p>`}
+    <details class="audit"><summary>Audit log: ${rej.length} item${rej.length === 1 ? "" : "s"} failed the source check and ${rej.length === 1 ? "was" : "were"} left out</summary>
+      ${rej.length ? rej.map(i => `<div class="rej"><b>${esc(i.metric || i.topic)}</b> <span class="why">${esc(i.check.reasons.join("; "))}</span><br><span class="meta">“${esc(i.source_quote)}”</span></div>`).join("") : `<p class="meta">Nothing was rejected.</p>`}
+    </details>
+  </article>`;
+}
+
+// ---------- request a company ----------
+const REPO = (() => {
+  const h = location.hostname, seg = location.pathname.split("/").filter(Boolean);
+  if (h.endsWith(".github.io")) return h.split(".")[0] + "/" + (seg[0] || h);
+  return "sislamova2223-sketch/earnings-tracker";
+})();
+function analyzePanelHTML() {
+  return `<section class="panel" id="analyze">
+    <h2>Request a company</h2>
+    <p>Enter any US-listed ticker. A GitHub Action finds the company’s latest earnings 8-K on SEC EDGAR and its call transcript,
+       has Claude extract guidance, results and tone, checks every quote and number against the source, and publishes it here.
+       It usually takes 3–5 minutes. Requests are made by opening a GitHub issue, so you’ll need to be signed in to GitHub.</p>
+    <div class="actions">
+      <label for="f-ticker" style="flex:0 0 160px">Ticker<input id="f-ticker" placeholder="NVDA" maxlength="10" autocomplete="off"></label>
+      <a class="btn" id="f-go" href="#" role="button" style="align-self:flex-end;text-decoration:none">Request analysis</a>
+      <span class="status" id="f-status"></span>
+    </div>
+  </section>`;
+}
+function wireAnalyze() {
+  const go = $("#f-go"), inp = $("#f-ticker"); if (!go) return;
+  const sync = () => {
+    const t = inp.value.trim().toUpperCase().replace(/[^A-Z0-9.\-]/g, "");
+    go.href = t ? `https://github.com/${REPO}/issues/new?title=${encodeURIComponent("Add " + t)}&body=${encodeURIComponent("Requested from the Earnings Call Tracker site. The workflow will analyze " + t + "'s latest earnings call.")}` : "#";
+    go.target = t ? "_blank" : "";
+  };
+  inp.addEventListener("input", sync);
+  go.addEventListener("click", (e) => { if (go.getAttribute("href") === "#") { e.preventDefault(); $("#f-status").textContent = "Enter a ticker first."; } else { $("#f-status").textContent = "Submit the issue on GitHub; the call appears here when the workflow finishes."; } });
+  sync();
+}
+
+// ---------- routing ----------
+function route() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (id && S.loaded) renderBrief(id); else renderHome($("#q").value.trim());
+  window.scrollTo(0, 0);
+}
+document.addEventListener("click", (e) => {
+  const o = e.target.closest("[data-open]"); if (o) { location.hash = o.dataset.open; return; }
+  if (e.target.closest("[data-home]")) { history.replaceState(null, "", location.pathname + location.search); $("#q").value = ""; route(); }
+});
+window.addEventListener("hashchange", route);
+let qt; $("#q").addEventListener("input", () => {
+  clearTimeout(qt); qt = setTimeout(() => {
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+    renderHome($("#q").value.trim());
+  }, 150);
+});
+
+// ---------- boot ----------
+renderHome("");
+(async () => {
+  try {
+    const idx = await fetch("data/index.json", { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    const docs = await Promise.all(idx.calls.map(c => fetch("data/" + c.file, { cache: "no-cache" }).then(r => r.json()).catch(() => null)));
+    S.calls = docs.filter(c => c && c.ticker && c.counts);
+    $("#updated").textContent = "Data updated " + new Date(idx.updated).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) + ".";
+  } catch (e) {
+    $("#notice").className = "notice bad"; $("#notice").textContent = "Couldn’t load the call data. Refresh the page to try again.";
+  }
+  S.loaded = true; route();
+})();
+</script>
+</body>
+</html>

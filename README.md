@@ -1,5 +1,7 @@
 # Earnings Call Tracker
 
+**Live site:** https://sislamova2223-sketch.github.io/earnings-tracker/
+
 A searchable website that tracks what management says on earnings calls. Every weekday a GitHub Action checks
 SEC EDGAR for each covered company's newest earnings release. When a new one appears, the Action pulls the call
 transcript and has Claude extract **forward guidance, reported results and management tone**. Before anything is
@@ -138,3 +140,7 @@ python -m guidance_tracker run NWSC --quarter "Q1 FY26" \
 - [ ] Quarter-over-quarter diff: flag guidance raised, lowered or dropped versus the prior call
 - [ ] Energy names (XOM, CVX, COP) with sector-specific fields: production, realized prices, buybacks
 - [ ] Email digest when a covered company reports
+
+---
+
+Built by Sabina Islamova · Finance, The Ohio State University Fisher College of Business

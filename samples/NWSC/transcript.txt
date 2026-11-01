@@ -1,0 +1,29 @@
+FICTIONAL SAMPLE DATA - Northwind Systems Corp. is an invented company used to demo the pipeline.
+
+Northwind Systems Corp. Q1 FY2026 Earnings Call
+
+Prepared Remarks
+
+Dana Whitfield, Chief Executive Officer:
+Thank you. We had a strong start to the fiscal year. Demand for our AI infrastructure services continues to exceed available supply, and we expect to remain capacity constrained through at least the end of the fiscal year. Customers are moving from pilots to production deployments, and our commercial bookings increased 31% year over year.
+
+Ravi Menon, Chief Financial Officer:
+Thanks, Dana. Now to our outlook for the second quarter. We expect total revenue of $19.4 to $19.8 billion, which represents growth of 13% to 15%. In Cloud Platforms, we expect revenue of $8.7 to $8.9 billion, with growth of 22% to 24% in constant currency. In Business Applications, we expect revenue of $6.2 to $6.3 billion. In Devices, we expect revenue to decline in the low single digits as PC demand remains soft.
+
+We expect operating margins to be down slightly year over year as we absorb higher depreciation from our datacenter build-out.
+
+For the full year, we are raising our capital expenditure outlook. We now expect capital expenditures of approximately $38 billion, up from the $34 billion we discussed in July. We continue to expect full-year operating margins to be roughly flat year over year.
+
+Question and Answer Session
+
+Analyst, Example Securities:
+Can you talk about enterprise spending outside of AI?
+
+Dana Whitfield, Chief Executive Officer:
+Sure. Outside of AI, we are seeing customers remain disciplined. Deal cycles in Business Applications lengthened modestly this quarter, particularly in Europe, and we are planning prudently for that to continue.
+
+Analyst, Example Securities:
+And on pricing?
+
+Ravi Menon, Chief Financial Officer:
+Pricing has held up well. We took a 6% list price increase on our premium Business Applications tiers in September and have seen minimal churn so far.

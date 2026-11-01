@@ -1,0 +1,25 @@
+{
+  "companies": [
+    {
+      "ticker": "BE",
+      "company": "Bloom Energy",
+      "fy_end_month": 12,
+      "transcript": "fool",
+      "fool_slug": "bloom-energy-be"
+    },
+    {
+      "ticker": "GOOGL",
+      "company": "Alphabet",
+      "fy_end_month": 12,
+      "transcript": "alphabet",
+      "fool_slug": "alphabet-googl"
+    },
+    {
+      "ticker": "MSFT",
+      "company": "Microsoft",
+      "fy_end_month": 6,
+      "transcript": "microsoft",
+      "fool_slug": "microsoft-msft"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "_note": "Hand-written stand-in for LLM output, including 3 deliberate errors so you can see the validator catch them.",
+  "company": "Northwind Systems (fictional)",
+  "ticker": "NWSC",
+  "quarter": "FY26Q1",
+  "guidance": [
+    {"metric": "Total revenue", "period": "FY26 Q2", "low": 19.4, "high": 19.8, "unit": "usd_billions", "basis": "13% to 15% growth", "direction": "initiated",
+     "source_quote": "We expect total revenue of $19.4 to $19.8 billion, which represents growth of 13% to 15%."},
+    {"metric": "Cloud Platforms revenue", "period": "FY26 Q2", "low": 8.7, "high": 8.9, "unit": "usd_billions", "basis": "22%-24% growth, constant currency", "direction": "initiated",
+     "source_quote": "In Cloud Platforms, we expect revenue of $8.7 to $8.9 billion, with growth of 22% to 24% in constant currency."},
+    {"metric": "Business Applications revenue", "period": "FY26 Q2", "low": 6.2, "high": 6.4, "unit": "usd_billions", "basis": null, "direction": "initiated",
+     "source_quote": "In Business Applications, we expect revenue of $6.2 to $6.3 billion."},
+    {"metric": "Devices revenue", "period": "FY26 Q2", "low": null, "high": null, "unit": "percent", "basis": null, "qualitative": "Decline in the low single digits", "direction": "initiated",
+     "source_quote": "In Devices, we expect revenue to decline in the low single digits as PC demand remains soft."},
+    {"metric": "Capital expenditures", "period": "FY26", "low": 38, "high": 38, "unit": "usd_billions", "basis": "approximately; prior $34B", "direction": "raised",
+     "source_quote": "We now expect capital expenditures of approximately $38 billion, up from the $34 billion we discussed in July."},
+    {"metric": "Operating margin", "period": "FY26", "low": null, "high": null, "unit": "percent", "basis": "y/y", "qualitative": "Roughly flat y/y", "direction": "maintained",
+     "source_quote": "We continue to expect full-year operating margins to be roughly flat year over year."}
+  ],
+  "reported": [
+    {"metric": "Revenue", "period": "FY26 Q1", "value": 18.6, "unit": "usd_billions", "yoy_change_pct": 14, "source_quote": "Revenue was $18.6 billion and increased 14%"},
+    {"metric": "Operating income", "period": "FY26 Q1", "value": 7.9, "unit": "usd_billions", "yoy_change_pct": 17, "source_quote": "Operating income was $7.9 billion and increased 17%"},
+    {"metric": "Diluted EPS", "period": "FY26 Q1", "value": 2.31, "unit": "usd_per_share", "yoy_change_pct": 13, "source_quote": "Diluted earnings per share was $2.31 and increased 13%"},
+    {"metric": "Cloud Platforms revenue", "period": "FY26 Q1", "value": 8.2, "unit": "usd_billions", "yoy_change_pct": 24, "source_quote": "Revenue in Cloud Platforms was $8.2 billion and increased 24%"},
+    {"metric": "Business Applications revenue", "period": "FY26 Q1", "value": 6.1, "unit": "usd_billions", "yoy_change_pct": 9, "source_quote": "Revenue in Business Applications was $6.1 billion and increased 9%"},
+    {"metric": "Devices revenue", "period": "FY26 Q1", "value": 4.3, "unit": "usd_billions", "yoy_change_pct": 3, "source_quote": "Revenue in Devices was $4,300 million and increased 3%"},
+    {"metric": "Net income", "period": "FY26 Q1", "value": 6.4, "unit": "usd_billions", "yoy_change_pct": 21, "source_quote": "Net income was $6.4 billion and increased 12%"}
+  ],
+  "tone": [
+    {"topic": "AI demand", "signal": "positive", "summary": "Demand exceeds supply; capacity constrained through fiscal year-end.",
+     "source_quote": "Demand for our AI infrastructure services continues to exceed available supply, and we expect to remain capacity constrained through at least the end of the fiscal year."},
+    {"topic": "Margins", "signal": "cautious", "summary": "Q2 operating margin down slightly on datacenter depreciation.",
+     "source_quote": "We expect operating margins to be down slightly year over year as we absorb higher depreciation from our datacenter build-out."},
+    {"topic": "Enterprise spending (non-AI)", "signal": "cautious", "summary": "Longer Business Applications deal cycles, especially in Europe.",
+     "source_quote": "Deal cycles in Business Applications lengthened modestly this quarter, particularly in Europe, and we are planning prudently for that to continue."},
+    {"topic": "Pricing", "signal": "positive", "summary": "6% list price increase on premium tiers with minimal churn.",
+     "source_quote": "Pricing has held up well. We took a 6% list price increase on our premium Business Applications tiers in September and have seen minimal churn so far."},
+    {"topic": "Bookings", "signal": "positive", "summary": "Commercial bookings strong.",
+     "source_quote": "Commercial bookings grew more than 30% as customers expanded their commitments."}
+  ]
+}

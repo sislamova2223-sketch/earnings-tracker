@@ -1,0 +1,66 @@
+name: Request a company
+
+# Open an issue titled "Add NVDA" (the website's Request button does this) to add a company
+# and analyze its latest earnings call. Only the repository owner's requests run, so strangers
+# can't spend your API credit.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: data-update
+  cancel-in-progress: false
+
+jobs:
+  add:
+    if: startsWith(github.event.issue.title, 'Add ') && github.event.issue.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Parse ticker
+        id: t
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          T=$(echo "${TITLE#Add }" | tr '[:lower:]' '[:upper:]' | tr -cd 'A-Z0-9.-' | cut -c1-10)
+          echo "ticker=$T" >> "$GITHUB_OUTPUT"
+      - name: Add and analyze
+        id: run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+          TRACKER_MODEL: ${{ vars.TRACKER_MODEL }}
+        run: |
+          set -o pipefail
+          python -m guidance_tracker add "${{ steps.t.outputs.ticker }}" 2>&1 | tee run.log
+      - name: Commit results
+        run: |
+          git config user.name "earnings-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data coverage.json
+          git diff --cached --quiet || (git commit -m "Add ${{ steps.t.outputs.ticker }}" && git pull --rebase && git push)
+      - name: Report back on the issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.run.outcome }}
+        run: |
+          SITE="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          if [ "$OUTCOME" = "success" ]; then
+            { echo "Done. It will appear on the site within a couple of minutes: $SITE"; echo; echo '```'; cat run.log; echo '```'; } > body.md
+            gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body-file body.md
+            gh issue close ${{ github.event.issue.number }} --repo ${{ github.repository }}
+          else
+            { echo "The analysis failed. Log:"; echo; echo '```'; cat run.log 2>/dev/null; echo '```'; } > body.md
+            gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body-file body.md
+          fi

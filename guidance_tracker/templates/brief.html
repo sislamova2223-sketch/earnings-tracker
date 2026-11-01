@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ v.ticker }} {{ v.quarter }} Earnings Brief</title>
+<style>
+  @page { size: letter; margin: 0.5in; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #1a1a1a; font-size: 10.5px; line-height: 1.35; max-width: 7.5in; margin: 0 auto; padding: 16px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0b2545; padding-bottom: 6px; margin-bottom: 10px; }
+  h1 { font-size: 18px; margin: 0; color: #0b2545; }
+  .sub { color: #555; font-size: 11px; }
+  .badge { font-size: 10px; background: #eef4ee; color: #2d6a2d; border: 1px solid #b9d6b9; border-radius: 3px; padding: 3px 7px; white-space: nowrap; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #0b2545; margin: 12px 0 4px; border-bottom: 1px solid #d8dee6; padding-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: 600; color: #555; font-size: 9.5px; border-bottom: 1px solid #ccc; padding: 3px 4px; }
+  td { padding: 3px 4px; border-bottom: 1px solid #eee; vertical-align: top; }
+  th.num { text-align: right; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .dir { font-size: 9px; font-weight: 600; text-transform: uppercase; padding: 1px 5px; border-radius: 2px; }
+  .raised { background: #e3f1e3; color: #2d6a2d; } .lowered { background: #f8e3e3; color: #9b2c2c; }
+  .maintained { background: #eceff3; color: #44546a; } .initiated { background: #e6eefb; color: #24508f; }
+  .unclear { background: #f3f3f3; color: #777; }
+  .src { color: #888; font-size: 9px; }
+  ul.tone { list-style: none; padding: 0; margin: 0; }
+  ul.tone li { padding: 3px 0; border-bottom: 1px solid #eee; }
+  .sig { display: inline-block; width: 62px; font-size: 9px; font-weight: 600; text-transform: uppercase; }
+  .positive { color: #2d6a2d; } .cautious { color: #a8660f; } .negative { color: #9b2c2c; } .neutral { color: #666; }
+  q { color: #555; font-style: italic; }
+  footer { margin-top: 12px; color: #888; font-size: 9px; border-top: 1px solid #ddd; padding-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>{{ v.company }} ({{ v.ticker }}) · {{ v.quarter }}</h1>
+    <div class="sub">Earnings guidance brief · generated {{ today }}</div>
+  </div>
+  <div class="badge">{{ counts.verified }} of {{ counts.total }} items verified against source</div>
+</header>
+
+<h2>Forward guidance</h2>
+{% if guidance %}
+<table>
+  <tr><th>Metric</th><th>Period</th><th class="num">Outlook</th><th>Basis</th><th>Mgmt. framing</th><th>Src</th></tr>
+  {% for i, c in guidance %}
+  <tr>
+    <td>{{ i.metric }}</td><td>{{ i.period }}</td><td class="num">{{ i | fmt_range }}</td>
+    <td>{{ i.basis or "" }}</td><td><span class="dir {{ i.direction }}">{{ i.direction }}</span></td>
+    <td class="src">{{ tag(c) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}<p>No verified guidance items.</p>{% endif %}
+
+<h2>Reported results</h2>
+{% if reported %}
+<table>
+  <tr><th>Metric</th><th>Period</th><th class="num">Value</th><th class="num">Y/Y</th><th>Src</th></tr>
+  {% for i, c in reported %}
+  <tr>
+    <td>{{ i.metric }}</td><td>{{ i.period }}</td><td class="num">{{ i.value | fmt(i.unit) }}</td>
+    <td class="num">{% if i.yoy_change_pct is not none %}{{ "%+g" | format(i.yoy_change_pct) }}%{% endif %}</td>
+    <td class="src">{{ tag(c) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}<p>No verified reported metrics.</p>{% endif %}
+
+<h2>Management tone</h2>
+{% if tone %}
+<ul class="tone">
+  {% for i, c in tone %}
+  <li><span class="sig {{ i.signal }}">{{ i.signal }}</span><b>{{ i.topic }}:</b> {{ i.summary }}
+    <br><q>{{ i.source_quote | truncate(220) }}</q> <span class="src">[{{ tag(c) }}]</span></li>
+  {% endfor %}
+</ul>
+{% else %}<p>No verified tone signals.</p>{% endif %}
+
+<footer>
+  Every figure above was extracted by an LLM{% if v.model %} ({{ v.model }}){% endif %} and then checked in code: its supporting quote must appear verbatim in the
+  8-K press release or call transcript, and each number must appear in that quote. {{ counts.rejected }} item(s) failed and were excluded; see the audit log.
+  Q-over-Q change flags: not yet enabled.
+</footer>
+</body>
+</html>

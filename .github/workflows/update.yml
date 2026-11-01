@@ -1,0 +1,49 @@
+name: Update earnings calls
+
+# Every weekday evening (after US market close) check each covered company for a new earnings 8-K.
+# Also runnable by hand from the Actions tab, optionally for specific tickers.
+on:
+  schedule:
+    - cron: "17 23 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: "Tickers to update, space-separated (blank = all)"
+        required: false
+        default: ""
+      force:
+        description: "Re-analyze even if the latest call is already on the site"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Analyze new calls
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+          TRACKER_MODEL: ${{ vars.TRACKER_MODEL }}
+        run: |
+          python -m guidance_tracker update ${{ github.event.inputs.tickers }} ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+      - name: Commit results
+        run: |
+          git config user.name "earnings-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data coverage.json
+          git diff --cached --quiet || (git commit -m "Update earnings call data" && git pull --rebase && git push)
