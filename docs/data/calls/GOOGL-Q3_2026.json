@@ -1,0 +1,292 @@
+{
+ "ticker": "GOOGL",
+ "company": "Alphabet",
+ "quarter": "Q3 2026",
+ "call_date": "2026-10-28",
+ "links": [
+  {
+   "label": "Call transcript (Alphabet IR)",
+   "url": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9/default.aspx"
+  },
+  {
+   "label": "Press release (SEC 8-K)",
+   "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/googexhibit991q32026.htm"
+  }
+ ],
+ "id": "GOOGL-Q3_2026",
+ "model": "Claude (manual seed run) · quotes verified against live source pages",
+ "analyzed_at": "2026-11-01T16:20:55-05:00",
+ "guidance": [
+  {
+   "metric": "Capital expenditures",
+   "period": "FY2026",
+   "low": 195,
+   "high": 205,
+   "unit": "usd_billions",
+   "direction": "maintained",
+   "source_quote": "our full-year 2026 CapEx guidance range of $195-$205 billion remain unchanged.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "FY2027",
+   "unit": "other",
+   "qualitative": "Significant increase",
+   "direction": "maintained",
+   "source_quote": "We continue to expect our CapEx to increase significantly in 2027, and we'll provide further details on our Q4 call.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Cloud TPU system sales",
+   "period": "Q4 2026 / 2027",
+   "unit": "other",
+   "qualitative": "Keep scaling in Q4; meaningful ramp in 2027",
+   "direction": "unclear",
+   "source_quote": "In Google Cloud, we expect TPU system sales to continue to scale in Q4, followed by a meaningful revenue ramp in 2027.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Cloud margins",
+   "period": "Near term",
+   "unit": "other",
+   "qualitative": "Near-term headwind from 3P capacity",
+   "direction": "unclear",
+   "source_quote": "We expect margin headwinds in the near-term as we utilize this capacity.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Services revenue growth",
+   "period": "Q4 2026",
+   "unit": "other",
+   "qualitative": "Pressured by tough Search comp",
+   "direction": "unclear",
+   "source_quote": "In Google Services, we will continue to lap the Search performance acceleration that began in the third quarter last year, which will pressure revenue growth in Q4.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "FX impact on revenue",
+   "period": "Q4 2026",
+   "unit": "other",
+   "qualitative": "Slightly larger headwind than Q3",
+   "direction": "unclear",
+   "source_quote": "at current spot rates, we would expect a slightly larger FX headwind to our consolidated revenues in Q4, relative to the prior quarter.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "reported": [
+  {
+   "metric": "Revenue",
+   "period": "Q3 2026",
+   "value": 127.6,
+   "unit": "usd_billions",
+   "yoy_change_pct": 25,
+   "source_quote": "Consolidated revenues were $127.6 billion, up 25% in both reported and constant currency.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Operating income",
+   "period": "Q3 2026",
+   "value": 40.6,
+   "unit": "usd_billions",
+   "yoy_change_pct": 30,
+   "source_quote": "Operating income increased 30% to $40.6 billion, and operating margin was 31.8%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Operating margin",
+   "period": "Q3 2026",
+   "value": 31.8,
+   "unit": "percent",
+   "source_quote": "Operating income increased 30% to $40.6 billion, and operating margin was 31.8%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Services revenue",
+   "period": "Q3 2026",
+   "value": 96.3,
+   "unit": "usd_billions",
+   "yoy_change_pct": 11,
+   "source_quote": "Google Services revenues increased 11% to $96.3 billion, reflecting strong growth in Search and Subscriptions.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Search & other advertising",
+   "period": "Q3 2026",
+   "value": 63.3,
+   "unit": "usd_billions",
+   "yoy_change_pct": 12,
+   "source_quote": "Google Search and other advertising revenues increased by 12% to $63.3 billion, with retail driving the largest contribution, followed by finance.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "YouTube advertising",
+   "period": "Q3 2026",
+   "value": 11.2,
+   "unit": "usd_billions",
+   "yoy_change_pct": 9,
+   "source_quote": "YouTube advertising revenues increased 9% to $11.2 billion, with Brand driving the largest contribution and notable strength in Living Room.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Cloud revenue",
+   "period": "Q3 2026",
+   "value": 30.7,
+   "unit": "usd_billions",
+   "yoy_change_pct": 103,
+   "source_quote": "Cloud revenues were up 103% to $30.7 billion, driven by strong growth in GCP",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Cloud operating margin",
+   "period": "Q3 2026",
+   "value": 36.2,
+   "unit": "percent",
+   "source_quote": "Operating margin increased from 23.7% in the third quarter last year to 36.2%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Google Cloud backlog",
+   "period": "Q3 2026",
+   "value": 561,
+   "unit": "usd_billions",
+   "source_quote": "Google Cloud's backlog was $561 billion in the third quarter, with the majority of the backlog related to typical GCP contracts.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "Q3 2026",
+   "value": 51.4,
+   "unit": "usd_billions",
+   "source_quote": "CapEx was $51.4 billion in the third quarter with the vast majority of the spend in technical infrastructure to support our investments in AI.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Free cash flow",
+   "period": "Q3 2026",
+   "value": -9.1,
+   "unit": "usd_billions",
+   "source_quote": "We had negative free cash flow of $9.1 billion in the third quarter, driven by our investments in CapEx.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "tone": [
+  {
+   "topic": "Search",
+   "signal": "positive",
+   "summary": "AI is driving Search's fastest query growth in five years.",
+   "source_quote": "Our AI investments in Search are driving our highest query growth in half a decade.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Cloud AI revenue",
+   "signal": "positive",
+   "summary": "Cloud AI revenue is in the tens of billions year to date.",
+   "source_quote": "Google Cloud has generated tens of billions of dollars in AI revenues year-to-date, and Google One is our fastest-growing subscription product, driven by demand for AI plans.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Capacity constraints",
+   "signal": "cautious",
+   "summary": "Supply limits mean renting third-party compute, ramping in Q4.",
+   "source_quote": "With respect to Cloud margins, given the supply-constraint environment, we started utilizing third-party compute capacity at the end of Q3 and will ramp usage in Q4.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Free cash flow",
+   "signal": "cautious",
+   "summary": "Infrastructure spending and TPU inventory will weigh on FCF.",
+   "source_quote": "Our sizable investments in technical infrastructure and inventory build of TPU systems as we scale that business will put pressure on free cash flows.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Returns on capital",
+   "signal": "positive",
+   "summary": "Expects ROIC to stay well above cost of capital.",
+   "source_quote": "Throughout this investment cycle, we expect to generate an attractive ROIC that remains meaningfully above our cost of capital and anticipate generating strong cash flow from operations.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Investment marks",
+   "signal": "negative",
+   "summary": "OI&E was hit by an unrealized loss on the SpaceX stake.",
+   "source_quote": "Other income and expenses was negative $8.2 billion, due primarily to unrealized loss from our investment in SpaceX from a decline in its stock price in the third quarter.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "counts": {
+  "total": 23,
+  "verified": 23,
+  "rejected": 0
+ },
+ "accession": "0001652044-26-000080",
+ "transcript_found": true
+}

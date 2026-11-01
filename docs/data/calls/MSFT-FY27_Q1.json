@@ -1,0 +1,410 @@
+{
+ "ticker": "MSFT",
+ "company": "Microsoft",
+ "quarter": "FY27 Q1",
+ "call_date": "2026-10-28",
+ "links": [
+  {
+   "label": "Call transcript (Microsoft IR)",
+   "url": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1"
+  },
+  {
+   "label": "Press release (SEC 8-K)",
+   "url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436122/msft-ex99_1.htm"
+  }
+ ],
+ "id": "MSFT-FY27_Q1",
+ "model": "Claude (manual seed run) · quotes verified against live source pages",
+ "analyzed_at": "2026-11-01T16:20:55-05:00",
+ "guidance": [
+  {
+   "metric": "Total revenue",
+   "period": "FY27 Q2",
+   "low": 96,
+   "high": 97.1,
+   "unit": "usd_billions",
+   "basis": "18–19% y/y growth",
+   "direction": "initiated",
+   "source_quote": "Therefore, at the total company level, revenue should be between $96 and $97.1 billion or growth of 18 to 19%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Agents and Infra revenue",
+   "period": "FY27 Q2",
+   "low": 80.1,
+   "high": 80.7,
+   "unit": "usd_billions",
+   "basis": "24–25% y/y growth",
+   "direction": "initiated",
+   "source_quote": "We expect revenue from Agents and Infra of $80.1 to $80.7 billion, or growth of 24 to 25%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Azure revenue growth",
+   "period": "FY27 Q2",
+   "low": 49,
+   "high": 50,
+   "unit": "percent",
+   "basis": "constant currency",
+   "direction": "initiated",
+   "source_quote": "In Azure, we expect revenue growth of 49 to 50% in constant currency",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "M365 Commercial cloud growth",
+   "period": "FY27 Q2",
+   "low": 19,
+   "high": 19,
+   "unit": "percent",
+   "basis": "approximately, constant currency",
+   "direction": "initiated",
+   "source_quote": "In M365 Commercial cloud, we expect growth of approximately 19% in constant currency",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "M365 consumer cloud growth",
+   "period": "FY27 Q2",
+   "unit": "percent",
+   "qualitative": "Low-teens growth",
+   "direction": "initiated",
+   "source_quote": "M365 consumer cloud revenue should grow in the low-teens, down sequentially as we lap the price impact noted earlier.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Microsoft Cloud gross margin",
+   "period": "FY27 Q2",
+   "low": 65,
+   "high": 65,
+   "unit": "percent",
+   "basis": "roughly; down y/y",
+   "direction": "initiated",
+   "source_quote": "Microsoft Cloud gross margin percentage should be roughly 65%, down year-over-year",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Devices and Consumer revenue",
+   "period": "FY27 Q2",
+   "low": 15.9,
+   "high": 16.4,
+   "unit": "usd_billions",
+   "direction": "initiated",
+   "source_quote": "In devices and consumer, we expect revenue to be $15.9 to $16.4 billion.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Windows OEM and Devices revenue",
+   "period": "FY27 Q2",
+   "unit": "percent",
+   "qualitative": "Decline in the mid-30s %",
+   "direction": "initiated",
+   "source_quote": "Windows OEM and Devices revenue should decline in the mid-thirties.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "COGS",
+   "period": "FY27 Q2",
+   "low": 32.7,
+   "high": 32.9,
+   "unit": "usd_billions",
+   "basis": "26–27% y/y growth",
+   "direction": "initiated",
+   "source_quote": "We expect COGS of $32.7 to $32.9 billion, or growth of 26 to 27%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Operating expense",
+   "period": "FY27 Q2",
+   "low": 18.5,
+   "high": 18.6,
+   "unit": "usd_billions",
+   "basis": "9% y/y growth",
+   "direction": "initiated",
+   "source_quote": "And operating expense of $18.5 to $18.6 billion or growth of 9% driven by continued investment in R&D compute capacity and talent.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Operating margin",
+   "period": "FY27 Q2",
+   "unit": "percent",
+   "qualitative": "Down slightly y/y",
+   "direction": "initiated",
+   "source_quote": "Operating margins should be down slightly year-over-year.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Other income and expense",
+   "period": "FY27 Q2",
+   "low": -300,
+   "high": -300,
+   "unit": "usd_millions",
+   "basis": "excl. OpenAI impact",
+   "direction": "initiated",
+   "source_quote": "other income and expense is expected to be roughly negative $300 million",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Effective tax rate",
+   "period": "FY27 Q2",
+   "low": 20,
+   "high": 20,
+   "unit": "percent",
+   "direction": "initiated",
+   "source_quote": "And we expect our Q2 effective tax rate to be approximately 20%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "FY27 Q2",
+   "low": 50,
+   "unit": "usd_billions",
+   "basis": "more than",
+   "direction": "initiated",
+   "source_quote": "In Q2, we expect CapEx spend will be over $50 billion.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "CY2026",
+   "low": 170,
+   "high": 170,
+   "unit": "usd_billions",
+   "basis": "approximately; reflects 3P delays",
+   "direction": "unclear",
+   "source_quote": "Therefore, for the calendar year, spend should be approximately $170 billion due to the 3P capacity delays noted earlier.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "reported": [
+  {
+   "metric": "Revenue",
+   "period": "FY27 Q1",
+   "value": 92.3,
+   "unit": "usd_billions",
+   "yoy_change_pct": 19,
+   "source_quote": "This quarter, revenue was $92.3 billion, up 19%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Diluted EPS (ex-OpenAI)",
+   "period": "FY27 Q1",
+   "value": 4.89,
+   "unit": "usd_per_share",
+   "yoy_change_pct": 18,
+   "source_quote": "Earnings per share was $4.89, an increase of 18% and 19% in constant currency, when adjusted for the impact from our investment in OpenAI.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Agents and Infra revenue",
+   "period": "FY27 Q1",
+   "value": 76.8,
+   "unit": "usd_billions",
+   "yoy_change_pct": 25,
+   "source_quote": "Revenue from Agents and Infra was $76.8 billion and grew 25%, reflecting strength across the connected layers of our platform.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Microsoft Cloud revenue",
+   "period": "FY27 Q1",
+   "value": 63.9,
+   "unit": "usd_billions",
+   "yoy_change_pct": 30,
+   "source_quote": "Now to Microsoft Cloud. Revenue was $63.9 billion and growth accelerated to 30% and 31% in constant currency",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Azure revenue growth",
+   "period": "FY27 Q1",
+   "value": 48,
+   "unit": "percent",
+   "source_quote": "Azure revenue was ahead of expectations and increased 48%, even with the 3P capacity delays noted earlier, driven by Foundry and improved CPU monetization.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Devices and Consumer revenue",
+   "period": "FY27 Q1",
+   "value": 15.5,
+   "unit": "usd_billions",
+   "yoy_change_pct": -3,
+   "source_quote": "Now to devices and consumer. Revenue was $15.5 billion and declined 3%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Windows OEM and Devices revenue growth",
+   "period": "FY27 Q1",
+   "value": -22,
+   "unit": "percent",
+   "source_quote": "And Windows OEM and Devices revenue decreased 22%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Commercial RPO",
+   "period": "FY27 Q1",
+   "value": 677,
+   "unit": "usd_billions",
+   "yoy_change_pct": 73,
+   "source_quote": "Commercial remaining performance obligation grew 73% to $677 billion",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Operating cash flow",
+   "period": "FY27 Q1",
+   "value": 58,
+   "unit": "usd_billions",
+   "yoy_change_pct": 29,
+   "source_quote": "Cash flow from operations was $58 billion, up 29% driven by strong cloud billings and collections.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "FY27 Q1",
+   "value": 45.2,
+   "unit": "usd_billions",
+   "source_quote": "Capital expenditures were $45.2 billion, as some third-party capacity deliveries we expected in Q1 were delayed.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "tone": [
+  {
+   "topic": "AI capacity",
+   "signal": "positive",
+   "summary": "Demand still exceeds the capacity Microsoft can supply.",
+   "source_quote": "Customer demand continues to exceed available supply.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Copilot adoption",
+   "signal": "positive",
+   "summary": "Copilot daily users are growing quickly.",
+   "source_quote": "Daily users are up nearly 50 percent quarter over quarter, and over 5X year over year.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Third-party capacity",
+   "signal": "cautious",
+   "summary": "Delayed third-party GPU contracts push capacity into H2.",
+   "source_quote": "In Azure, we expect revenue growth of 49 to 50% in constant currency with continued efficiency gains across our CPU and GPU fleet helping to offset some 3P GPU as a service contracts that have been delayed to H2.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "M365 sales execution",
+   "signal": "cautious",
+   "summary": "Weaker sales execution in E3 and standalone products.",
+   "source_quote": "Results were ahead of expectations driven by stronger GitHub Copilot adoption and usage, partially offset by weaker sales execution in our M365 E3 and standalone SKUs.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "PC market",
+   "signal": "negative",
+   "summary": "Windows OEM revenue missed on tough comps, channel destocking and weak PCs.",
+   "source_quote": "Windows OEM revenue was below expectations and decreased 27% and 28% in constant currency driven by the Windows 10 end of support demand in the prior year, inventory drawdowns by OEM and channel partners, and weaker PC market demand.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Cloud margins",
+   "signal": "cautious",
+   "summary": "Cloud gross margin is falling as the mix shifts toward Azure.",
+   "source_quote": "Microsoft Cloud gross margin percentage declined year-over-year to 66%, driven by sales mix shift to Azure, partially offset by product-level margin improvements, primarily in Azure.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "counts": {
+  "total": 31,
+  "verified": 31,
+  "rejected": 0
+ },
+ "accession": "0001193125-26-436122",
+ "transcript_found": true
+}

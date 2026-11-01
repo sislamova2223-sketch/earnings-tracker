@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .schema import Extraction
 
-DEFAULT_MODEL = os.environ.get("TRACKER_MODEL", "claude-sonnet-5-5")
+DEFAULT_MODEL = os.environ.get("TRACKER_MODEL") or "claude-sonnet-5-5"
 
 SYSTEM = """You are an equity research associate extracting facts from an earnings release and call transcript.
 

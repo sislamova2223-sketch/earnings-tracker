@@ -2,7 +2,7 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
-briefs/
-data/
+/briefs/
+/data/
 samples/output/
 .env

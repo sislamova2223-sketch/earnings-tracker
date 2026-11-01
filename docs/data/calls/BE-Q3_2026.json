@@ -1,0 +1,287 @@
+{
+ "ticker": "BE",
+ "company": "Bloom Energy",
+ "quarter": "Q3 2026",
+ "call_date": "2026-10-22",
+ "links": [
+  {
+   "label": "Call transcript (Motley Fool)",
+   "url": "https://www.fool.com/earnings/call-transcripts/2026/10/22/bloom-energy-be-q3-2026-earnings-call-transcript/"
+  },
+  {
+   "label": "Press release (SEC 8-K)",
+   "url": "https://www.sec.gov/Archives/edgar/data/1664703/000162828026066890/ex991_q326financialresults.htm"
+  },
+  {
+   "label": "Investor relations",
+   "url": "https://investor.bloomenergy.com"
+  }
+ ],
+ "id": "BE-Q3_2026",
+ "model": "Claude (manual seed run) · quotes verified against live source pages",
+ "analyzed_at": "2026-11-01T16:20:55-05:00",
+ "guidance": [
+  {
+   "metric": "Revenue",
+   "period": "FY2026",
+   "low": 4.4,
+   "high": 4.6,
+   "unit": "usd_billions",
+   "basis": "~122% y/y growth at midpoint",
+   "direction": "raised",
+   "source_quote": "Raises full year 2026 revenue guidance to $4.4 billion - $4.6 billion, representing 122% year-over-year growth at the midpoint",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Non-GAAP gross margin",
+   "period": "FY2026",
+   "low": 34,
+   "high": 34,
+   "unit": "percent",
+   "basis": "approximately",
+   "direction": "maintained",
+   "source_quote": "We are maintaining our most recent non-GAAP gross margin outlook of approximately 34%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Non-GAAP operating income",
+   "period": "FY2026",
+   "low": 960,
+   "high": 1030,
+   "unit": "usd_millions",
+   "direction": "raised",
+   "source_quote": "We are also raising our non-GAAP operating income outlook to $960 million to $1.03 billion",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Non-GAAP operating margin (at midpoint)",
+   "period": "FY2026",
+   "low": 22,
+   "high": 22,
+   "unit": "percent",
+   "direction": "raised",
+   "source_quote": "At the midpoint, that is a 22% operating margin.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Non-GAAP diluted EPS",
+   "period": "FY2026",
+   "low": 3.1,
+   "high": 3.4,
+   "unit": "usd_per_share",
+   "direction": "raised",
+   "source_quote": "Our non-GAAP diluted EPS outlook is now $3.10 to $3.40",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "reported": [
+  {
+   "metric": "Revenue",
+   "period": "Q3 2026",
+   "value": 1235.8,
+   "unit": "usd_millions",
+   "yoy_change_pct": 138.1,
+   "source_quote": "Revenue of $1,235.8 million increased 138.1%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Product revenue",
+   "period": "Q3 2026",
+   "value": 1073.6,
+   "unit": "usd_millions",
+   "yoy_change_pct": 179.4,
+   "source_quote": "Product revenue of $1,073.6 million increased 179.4%.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Service revenue",
+   "period": "Q3 2026",
+   "value": 67.6,
+   "unit": "usd_millions",
+   "yoy_change_pct": 15,
+   "source_quote": "Service revenue was $67.6 million up 15% year-over-year and roughly flat sequentially.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Gross margin (GAAP)",
+   "period": "Q3 2026",
+   "value": 33.8,
+   "unit": "percent",
+   "source_quote": "Gross margin of 33.8% increased 453 basis points.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Gross margin (non-GAAP)",
+   "period": "Q3 2026",
+   "value": 34.5,
+   "unit": "percent",
+   "source_quote": "Non-GAAP gross margin of 34.5% increased 412 basis points.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Operating income (non-GAAP)",
+   "period": "Q3 2026",
+   "value": 285.7,
+   "unit": "usd_millions",
+   "source_quote": "Non-GAAP operating income of $285.7 million increased $239.4 million.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Operating margin (non-GAAP)",
+   "period": "Q3 2026",
+   "value": 23.1,
+   "unit": "percent",
+   "source_quote": "Operating margin for the quarter expanded to 23.1% from 8.9% a year ago.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Diluted EPS (GAAP)",
+   "period": "Q3 2026",
+   "value": 0.78,
+   "unit": "usd_per_share",
+   "source_quote": "EPS of $0.78 increased $0.88.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Diluted EPS (non-GAAP)",
+   "period": "Q3 2026",
+   "value": 0.94,
+   "unit": "usd_per_share",
+   "source_quote": "Non-GAAP EPS of $0.94 increased $0.79.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "metric": "Capital expenditures",
+   "period": "Q3 2026",
+   "value": 153,
+   "unit": "usd_millions",
+   "source_quote": "Capital expenditures $153 million in the quarter, and $231 million year to date.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "metric": "Free cash flow",
+   "period": "Q3 2026",
+   "value": -181,
+   "unit": "usd_millions",
+   "source_quote": "Free cash flow was a use of $181 million in the quarter.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "tone": [
+  {
+   "topic": "Demand breadth",
+   "signal": "positive",
+   "summary": "Demand is spreading from hyperscalers to other industries.",
+   "source_quote": "What began with hyperscalers is rapidly moving across market segments because every business needs reliable power to grow.",
+   "check": {
+    "status": "verified",
+    "source_doc": "press_release"
+   }
+  },
+  {
+   "topic": "Operating leverage",
+   "signal": "positive",
+   "summary": "One quarter of operating income beat all of 2025.",
+   "source_quote": "Operating income in this quarter alone exceeded operating income for all of last year.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Pricing and cost",
+   "signal": "positive",
+   "summary": "Product margin gains show pricing power and cost cuts.",
+   "source_quote": "That is a direct read on both our pricing strength and the cost reductions we are driving through the product.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Cash conversion",
+   "signal": "cautious",
+   "summary": "Operating cash flow was negative as working capital grew.",
+   "source_quote": "Cash flow from operations in the quarter was a use of $27 million Net income was more than offset by an increase in working capital, driven primarily by inventory, contract assets and receivables.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Delivery timing",
+   "signal": "cautious",
+   "summary": "Where FY26 lands in the range depends on a few year-end deliveries.",
+   "source_quote": "With 1 quarter remaining, the timing of a small number of deliveries around year end will determine where in the range we land.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  },
+  {
+   "topic": "Capacity investment",
+   "signal": "neutral",
+   "summary": "Capacity is added in increments that follow demand.",
+   "source_quote": "Adding capacity in these increments means our capital spending tracks demand.",
+   "check": {
+    "status": "verified",
+    "source_doc": "transcript"
+   }
+  }
+ ],
+ "counts": {
+  "total": 22,
+  "verified": 22,
+  "rejected": 0
+ },
+ "accession": "0001628280-26-066890",
+ "transcript_found": true
+}

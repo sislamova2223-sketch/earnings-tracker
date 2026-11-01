@@ -1,0 +1,29 @@
+{
+  "updated": "2026-11-01T21:30:01+00:00",
+  "calls": [
+    {
+      "id": "BE-Q3_2026",
+      "ticker": "BE",
+      "company": "Bloom Energy",
+      "quarter": "Q3 2026",
+      "call_date": "2026-10-22",
+      "file": "calls/BE-Q3_2026.json"
+    },
+    {
+      "id": "GOOGL-Q3_2026",
+      "ticker": "GOOGL",
+      "company": "Alphabet",
+      "quarter": "Q3 2026",
+      "call_date": "2026-10-28",
+      "file": "calls/GOOGL-Q3_2026.json"
+    },
+    {
+      "id": "MSFT-FY27_Q1",
+      "ticker": "MSFT",
+      "company": "Microsoft",
+      "quarter": "FY27 Q1",
+      "call_date": "2026-10-28",
+      "file": "calls/MSFT-FY27_Q1.json"
+    }
+  ]
+}
