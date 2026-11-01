@@ -1,0 +1,25 @@
+name: Diagnose network access
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check every source the pipeline uses
+        run: |
+          check() { code=$(curl -s -o /tmp/body -w "%{http_code}" -A "$2" -L --max-time 30 "$1"); echo "$code  [$3]  $1  :: $(head -c 300 /tmp/body | tr -s '\n\t ' ' ' | sed 's/<[^>]*>//g' | head -c 160)"; }
+          UA_NOREPLY="EarningsTracker 288703607+sislamova2223-sketch@users.noreply.github.com"
+          UA_SIMPLE="EarningsTracker admin@earningstracker.dev"
+          UA_BROWSER="Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+          curl -s https://api.ipify.org; echo " <- runner IP"
+          check https://data.sec.gov/submissions/CIK0000789019.json "$UA_NOREPLY" noreply
+          check https://data.sec.gov/submissions/CIK0000789019.json "$UA_SIMPLE" simple
+          check https://www.sec.gov/files/company_tickers.json "$UA_SIMPLE" simple
+          check https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent "$UA_SIMPLE" simple
+          check https://efts.sec.gov/LATEST/search-index?q=%22earnings%22 "$UA_SIMPLE" simple
+          check https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1 "$UA_BROWSER" browser
+          check https://abc.xyz/investor/ "$UA_BROWSER" browser
+          check https://www.fool.com/earnings/call-transcripts/2026/10/22/bloom-energy-be-q3-2026-earnings-call-transcript/ "$UA_BROWSER" browser
+          check https://api.anthropic.com/v1/models "$UA_BROWSER" anthropic
